@@ -15,10 +15,11 @@ class System{
     vector<Plant*> plants;
     vector<Zombie*> zombies;
     vector<Shot*> plantShots;
+    
 
 
     public:
     System(int width, int height);
     RenderWindow window;
     void run();
-}
+};
