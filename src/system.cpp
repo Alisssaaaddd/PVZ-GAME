@@ -5,5 +5,9 @@ System::System(int width, int height){
     window.setFramerateLimit(FRAME_RATE);
     state = IN_GAME;
 
-    if(!backgo)
+    if (!backgroundTexture.loadFromFile(PICS_PATH + "bg.png")) {
+    debug("failed to load image");
+    } 
+    backgroundSprite.setTexture(backgroundTexture);
+    
 }
