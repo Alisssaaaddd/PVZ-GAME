@@ -15,8 +15,6 @@ class System{
     vector<Plant*> plants;
     vector<Zombie*> zombies;
     vector<Shot*> plantShots;
-    Texture backgroundTexture;
-    Sprite backgroundSprite;
 
 
     public:
