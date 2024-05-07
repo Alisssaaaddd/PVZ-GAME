@@ -15,6 +15,7 @@ class Controller{
         vector<Sun*> suns;
 
     public:
+        Controller();
         void draw_sun_random();
         void draw_sun(Vector2i sunFlowerPos);
         

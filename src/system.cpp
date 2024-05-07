@@ -2,6 +2,7 @@
 
 System::System(int width, int height)
 {
+    sf::Music music;
     window.create(VideoMode(width, height), "UT PVZ", Style::Close);
     window.setFramerateLimit(FRAME_RATE);
     state = IN_GAME;
@@ -19,7 +20,6 @@ System::System(int width, int height)
     }
     music.setLoop(true);
     music.play();
-    Controller* 
 }
 
 void System::start()

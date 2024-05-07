@@ -1,8 +1,8 @@
-#include "controller.hpp"
+#include "../includes/controller.hpp"
 
 
 Controller::Controller(){
-
+    //
 }
 
 void Controller::draw_sun_random(){
