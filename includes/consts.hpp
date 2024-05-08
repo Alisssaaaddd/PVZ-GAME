@@ -17,6 +17,7 @@ const int WIDTH = 1920;
 const int HEIGHT = 850;
 const int FRAME_RATE = 144;
 const int SUN_SPEED = 10;
+const int SUN_CREDIT = 10;
 
 const string PICS_PATH = "./files/images/", AUDIO_PATH = "./files/audio/",
              FONTS_PATH = "./files/fonts/";

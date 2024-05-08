@@ -13,20 +13,20 @@ System::System(int width, int height)
     }
     backgroundSprite.setTexture(backgroundTexture);
 
-    backgroundSprite.setTexture(backgroundTexture);
     if (!music.openFromFile(AUDIO_PATH + "bg.ogg"))
     {
         debug("failed to load music");
     }
     music.setLoop(true);
     music.play();
+    gamePlay = new Controller();
 }
 
 void System::start()
 {
     while (window.isOpen() and state != EXIT)
     {
-        // update();
+        update();
         render();
         handle_events();
     }
@@ -36,24 +36,24 @@ void System::start()
 void System::render()
 {
     window.clear();
-    switch (state)
-    {
-    case (IN_GAME):
-        window.draw(backgroundSprite);
-        // player->render(window);
-        // handler->render(window);
-        break;
-    case (PAUSE_MENU):
-        break;
-    case (MAIN_MENU):
-        break;
-    case (VICTORY_SCREEN):
-        break;
-    case (GAMEOVER_SCREEN):
-        break;
-        // case (EXIT):
-        //     abort();
-        //     break;
+
+    switch (state){
+        case (IN_GAME):
+            window.draw(backgroundSprite);
+            gamePlay->render(window);
+            // player->render(window);
+            break;
+        case (PAUSE_MENU):
+            break;
+        case (MAIN_MENU):
+            break;
+        case (VICTORY_SCREEN):
+            break;
+        case (GAMEOVER_SCREEN):
+            break;
+            // case (EXIT):
+            //     abort();
+            //     break;
     }
     window.display();
 }
@@ -86,18 +86,18 @@ void System::handle_mouse_press(Event ev)
     if (ev.mouseButton.button == Mouse::Right)
         return;
     Vector2i pos = {ev.mouseButton.x, ev.mouseButton.y};
-    switch (state)
-    {
-    case (IN_GAME):
-        break;
-    case (PAUSE_MENU):
-        break;
-    case (MAIN_MENU):
-        break;
-    case (VICTORY_SCREEN):
-        break;
-    case (GAMEOVER_SCREEN):
-        break;
+    switch (state){
+        case (IN_GAME):
+            gamePlay->handle_mouse_press(pos);
+            break;
+        case (PAUSE_MENU):
+            break;
+        case (MAIN_MENU):
+            break;
+        case (VICTORY_SCREEN):
+            break;
+        case (GAMEOVER_SCREEN):
+            break;
     }
 }
 
@@ -118,5 +118,21 @@ void System::handle_mouse_release(Event ev)
         break;
     case (GAMEOVER_SCREEN):
         break;
+    }
+}
+
+void System::update(){
+    switch (state) {
+        case (IN_GAME):
+            gamePlay->update();
+            break;
+        case (PAUSE_MENU):
+            break;
+        case (MAIN_MENU):
+            break;
+        case (VICTORY_SCREEN):
+            break;
+        case (GAMEOVER_SCREEN):
+            break;
     }
 }

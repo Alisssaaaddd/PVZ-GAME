@@ -14,17 +14,16 @@ enum State {
 class System{
     private:
       State state;
-      int totalCredit = 0;
       Controller* gamePlay;
       Texture backgroundTexture;
       Sprite backgroundSprite;
-    
-  
+      
     public:
       System(int width, int height);
       RenderWindow window;
       void start();
       void render();
+      void update();
       void handle_events();
       void handle_mouse_press(Event ev);
       void handle_mouse_release(Event ev);
