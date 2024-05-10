@@ -14,7 +14,7 @@ using namespace sf;
 using namespace std;
 
 const int WIDTH = 1920;
-const int HEIGHT = 850;
+const int HEIGHT = 1080;
 const int FRAME_RATE = 144;
 const int SUN_SPEED = 10;
 const int SUN_CREDIT = 10;

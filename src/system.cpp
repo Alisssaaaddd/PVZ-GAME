@@ -7,7 +7,7 @@ System::System(int width, int height)
     window.setFramerateLimit(FRAME_RATE);
     state = IN_GAME;
 
-    if (!backgroundTexture.loadFromFile(PICS_PATH + "bg.png"))
+    if (!backgroundTexture.loadFromFile(PICS_PATH + "background.png"))
     {
         debug("failed to load image");
     }
@@ -41,7 +41,6 @@ void System::render()
         case (IN_GAME):
             window.draw(backgroundSprite);
             gamePlay->render(window);
-            // player->render(window);
             break;
         case (PAUSE_MENU):
             break;

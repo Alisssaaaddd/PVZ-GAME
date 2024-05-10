@@ -13,5 +13,7 @@ private:
     int speed;
 
 public:
-    
+    Shot();
+    ~Shot();
+    FloatRect get_rect();
 };

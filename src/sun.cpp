@@ -32,7 +32,6 @@ void Sun::render(RenderWindow& window){
 
 void Sun::check_if_is_touched(Vector2i mouse_pos){
     if(sprite.getGlobalBounds().contains((Vector2f)mouse_pos)){
-        cout << 1;
         should_be_removed = true;
     }
 }
