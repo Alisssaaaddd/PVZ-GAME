@@ -24,7 +24,7 @@ class Controller{
         void handle_mouse_press(Vector2i pos);
         void remove_touched_and_outside_suns();
 
-        void add_zombie();
+        void add_zombie_random();
         // void remove_dead_zombie();
         // void handle_collision();
 };

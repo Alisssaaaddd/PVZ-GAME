@@ -61,9 +61,10 @@ void Controller::update()
 
     Time zelapsed = zombieClock.getElapsedTime();
 
-    if(zelapsed.asMilliseconds() >=7000){
+    if (zelapsed.asMilliseconds() >= 5000)
+    {
         zombieClock.restart();
-        add_zombie();
+        add_zombie_random();
     }
 
     for (auto z : zombies)
@@ -95,15 +96,23 @@ void Controller::remove_touched_and_outside_suns()
     }
 }
 
-void Controller::add_zombie()
+void Controller::add_zombie_random()
 {
-    const int block_width = 60;
-    const int block_height = 60;
-
     int x_position = WIDTH - 20;
-    int y_position = (rng() % 5) * block_height;
+    int y_position = ((rng() % 5) * 160) + 90;
+    int randZom = rng() % 2;
+    Zombie* z;
 
-    Zombie* z = new Zombie(Vector2f(x_position, y_position));
+    switch (randZom)
+    {
+    case 0:
+        z = new OrdZombie(Vector2f(x_position, y_position+30));
+        break;
+    case 1:
+        z = new HugeZombie(Vector2f(x_position, y_position));
+        break;
+    }
+
     zombies.push_back(z);
 }
 
