@@ -12,7 +12,7 @@ Sun::Sun(Vector2i init_pos){
     sprite.setScale(0.5, 0.5);
 
     IntRect rect;
-    rect.width = 250; 
+    rect.width = 250;
     rect.height = 250;
     sprite.setTextureRect(rect);
     sprite.setPosition((Vector2f)init_pos);
@@ -32,7 +32,6 @@ void Sun::render(RenderWindow& window){
 
 void Sun::check_if_is_touched(Vector2i mouse_pos){
     if(sprite.getGlobalBounds().contains((Vector2f)mouse_pos)){
-        cout << 1;
         should_be_removed = true;
     }
 }
