@@ -25,5 +25,6 @@ const string PICS_PATH = "./files/images/", AUDIO_PATH = "./files/audio/",
 const Color BLUE = Color(50, 115, 220);
 const Color PURPLE = Color(130, 50, 220);
 const Color YELLOW = Color(255, 248, 220);
+const Color LOW_TRANSPARENCY = Color(255, 255, 255, 150);
 
 #define debug(x) cout << x << endl, exit(0);

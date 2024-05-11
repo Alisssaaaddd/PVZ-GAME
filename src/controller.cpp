@@ -1,7 +1,10 @@
 #include "../includes/controller.hpp"
 
-Controller::Controller()
-{
+
+Controller::Controller(){
+    Card* sunFolwerCard = new Card("sunfloweractivecard.png", "sunflowerinactivecard.png",
+     Vector2i(100, 100), 50, "sunflower.png");
+    cards.push_back(sunFolwerCard);
 }
 
 void Controller::handle_mouse_press(Vector2i mouse_pos)
@@ -16,12 +19,24 @@ void Controller::handle_mouse_press(Vector2i mouse_pos)
         }
     }
 
-    // We'll add other objects later too ... .
+    for(Card* c : cards){
+        c->handle_mouse_press(mouse_pos);
+        if(c->is_dragging()){
+            return;
+        }
+    }
+    //We'll add other objects later too ... .
 }
 
-void Controller::add_sun_random()
-{
-    DynamicSun *s = new DynamicSun(Vector2i(rng() % WIDTH, 0));
+void Controller::handle_mouse_release(Vector2i mouse_pos){
+    for(Card* c : cards){
+        c->handle_mouse_release(mouse_pos);
+    }
+    //We'll add other objects later too ... .
+}
+
+void Controller::add_sun_random(){
+    DynamicSun* s = new DynamicSun(Vector2i(rng() % WIDTH, -100));
     suns.push_back(s);
 }
 
@@ -36,15 +51,18 @@ void Controller::render(RenderWindow &window)
         s->render(window);
     }
 
+    for(Card* c : cards){
+        c->render(window);
+    }
+
+
     for (auto *z : zombies)
     {
         z->render(window);
     }
-    // it will be completed
 }
 
-void Controller::update()
-{
+void Controller::update(RenderWindow& window){
     Time elapsed = sunClock.getElapsedTime();
 
     if (elapsed.asMilliseconds() >= 5000)
@@ -58,6 +76,11 @@ void Controller::update()
         s->update();
     }
     remove_touched_and_outside_suns();
+
+    Vector2i mouse_pos = Mouse::getPosition(window);
+    for(Card* c : cards){
+        c->update(totalCredit, mouse_pos);
+    }
 
     Time zelapsed = zombieClock.getElapsedTime();
 
@@ -90,9 +113,8 @@ void Controller::remove_touched_and_outside_suns()
                          { return p->get_shoud_be_removed(); }),
                suns.end());
 
-    for (Sun *s : removed)
-    {
-        delete (s);
+    for (Sun* s : removed){
+        delete(s);
     }
 }
 

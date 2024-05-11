@@ -19,6 +19,7 @@ System::System(int width, int height)
     }
     music.setLoop(true);
     music.play();
+    
     gamePlay = new Controller();
 }
 
@@ -62,20 +63,19 @@ void System::handle_events()
     Event event;
     while (window.pollEvent(event))
     {
-        switch (event.type)
-        {
-        case (Event::Closed):
-            window.close();
-            state = EXIT;
-            break;
-        case (Event::MouseButtonPressed):
-            handle_mouse_press(event);
-            break;
-        case (Event::MouseButtonReleased):
-            handle_mouse_release(event);
-            break;
-        default:
-            break;
+        switch (event.type){
+            case (Event::Closed):
+                window.close();
+                state = EXIT;
+                break;
+            case (Event::MouseButtonPressed):
+                handle_mouse_press(event);
+                break;
+            case (Event::MouseButtonReleased):
+                handle_mouse_release(event);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -84,10 +84,10 @@ void System::handle_mouse_press(Event ev)
 {
     if (ev.mouseButton.button == Mouse::Right)
         return;
-    Vector2i pos = {ev.mouseButton.x, ev.mouseButton.y};
+    Vector2i mouse_pos = {ev.mouseButton.x, ev.mouseButton.y};
     switch (state){
         case (IN_GAME):
-            gamePlay->handle_mouse_press(pos);
+            gamePlay->handle_mouse_press(mouse_pos);
             break;
         case (PAUSE_MENU):
             break;
@@ -104,10 +104,11 @@ void System::handle_mouse_release(Event ev)
 {
     if (ev.mouseButton.button == Mouse::Right)
         return;
-    Vector2i pos = {ev.mouseButton.x, ev.mouseButton.y};
+    Vector2i mouse_pos = {ev.mouseButton.x, ev.mouseButton.y};
     switch (state)
     {
     case (IN_GAME):
+        gamePlay->handle_mouse_release(mouse_pos);
         break;
     case (PAUSE_MENU):
         break;
@@ -123,7 +124,7 @@ void System::handle_mouse_release(Event ev)
 void System::update(){
     switch (state) {
         case (IN_GAME):
-            gamePlay->update();
+            gamePlay->update(window);
             break;
         case (PAUSE_MENU):
             break;

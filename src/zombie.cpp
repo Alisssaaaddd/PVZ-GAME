@@ -3,7 +3,7 @@
 Zombie::Zombie(Vector2f p){
     pos = p;
 }
-       
+  
 Zombie::~Zombie(){
 
 }

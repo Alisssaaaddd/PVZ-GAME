@@ -8,7 +8,6 @@ protected:
     bool should_be_removed;
     Texture texture;
     Sprite sprite;
-    IntRect rect;
     Vector2i pos;
 
 public:

@@ -12,7 +12,7 @@ Sun::Sun(Vector2i init_pos){
     sprite.setScale(0.5, 0.5);
 
     IntRect rect;
-    rect.width = 250; 
+    rect.width = 250;
     rect.height = 250;
     sprite.setTextureRect(rect);
     sprite.setPosition((Vector2f)init_pos);
