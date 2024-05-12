@@ -5,6 +5,9 @@ Controller::Controller(){
     Card* sunFolwerCard = new Card("sunfloweractivecard.png", "sunflowerinactivecard.png",
      Vector2i(100, 100), 50, "sunflower.png");
     cards.push_back(sunFolwerCard);
+
+    Plant* peashooter = new Walnut(Vector2f(590, 190));
+    plants.push_back(peashooter);
 }
 
 void Controller::handle_mouse_press(Vector2i mouse_pos){
@@ -33,34 +36,38 @@ void Controller::handle_mouse_release(Vector2i mouse_pos){
 }
 
 void Controller::add_sun_random(){
-    DynamicSun* s = new DynamicSun(Vector2i(rng() % WIDTH, -100));
+    DynamicSun* s = new DynamicSun(Vector2f(rng() % WIDTH, -100));
     suns.push_back(s);
 }
 
-void Controller::add_sun_inposition(Vector2i sunFlowerPos){
-    
+void Controller::add_sun_inposition(Vector2f sunFlowerPos){
+    StaticSun* s = new StaticSun(sunFlowerPos, 5);
+    suns.push_back(s);
 }
 
 void Controller::render(RenderWindow& window){
-    for(Sun* s : suns){
-        s->render(window);
+    
+    for(Plant* p : plants){
+        p->render(window);
     }
 
     for(Card* c : cards){
         c->render(window);
     }
 
-
-    for (auto *z : zombies)
-    {
+    for (Zombie* z : zombies){
         z->render(window);
+    }
+
+    for(Sun* s : suns){
+        s->render(window);
     }
 }
 
 void Controller::update(RenderWindow& window){
     Time elapsed = sunClock.getElapsedTime();
 
-    if(elapsed.asMilliseconds() >= 1000){
+    if(elapsed.asMilliseconds() >= 10000){
         sunClock.restart();
         add_sun_random();
     }
@@ -83,9 +90,21 @@ void Controller::update(RenderWindow& window){
         add_zombie_random();
     }
 
-    for (auto z : zombies)
+    for (Zombie* z : zombies)
     {
         z->update();
+    }
+
+    for(Plant* p : plants){
+        p->update();
+
+        if(p->get_id() == SUN_FLOWER_ID){
+            SunFlower* s = (SunFlower*) p;
+
+            if(s->should_produce_sun()){
+                add_sun_inposition(p->get_pos());
+            }
+        }
     }
 }
 

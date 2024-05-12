@@ -11,7 +11,7 @@ Card::Card(string active_pic_name, string inactive_pic_name, Vector2i p, int cos
     }
     plant_sprite.setTexture(plant_texture);
     
-    plant_sprite.setScale(0.45, 0.45);
+    plant_sprite.setScale(0.5, 0.5);
     plant_sprite.setColor(LOW_TRANSPARENCY);
     plant_sprite.setPosition((Vector2f)p);
 
@@ -24,7 +24,7 @@ Card::Card(string active_pic_name, string inactive_pic_name, Vector2i p, int cos
     }
 
     sprite.setTexture(inactive_texture);
-    sprite.setScale(1, 1);
+    sprite.setScale(1.5, 1.5);
 
     sprite.setPosition((Vector2f)p);
 }

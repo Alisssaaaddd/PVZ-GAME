@@ -18,6 +18,11 @@ const int HEIGHT = 1012;
 const int FRAME_RATE = 144;
 const int SUN_SPEED = 10;
 const int SUN_CREDIT = 10;
+const string SUN_FLOWER_ID = "sunflower";
+const string PEA_SHOOTER_ID = "peashooter";
+const string ICE_PEA_SHOOTER_ID = "icepeashooter";
+const string WALNUT_ID = "walnut";
+const string MELONPALT_ID = "melonpalt";
 
 const string PICS_PATH = "./files/images/", AUDIO_PATH = "./files/audio/",
              FONTS_PATH = "./files/fonts/";

@@ -22,7 +22,7 @@ class Controller{
         void render(RenderWindow& window);
         void update(RenderWindow& window);
         void add_sun_random();
-        void add_sun_inposition(Vector2i sunFlowerPos);
+        void add_sun_inposition(Vector2f sunFlowerPos);
         void handle_mouse_press(Vector2i pos);
         void handle_mouse_release(Vector2i pos);
 
