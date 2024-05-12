@@ -3,7 +3,7 @@
 System::System(int width, int height)
 {
     sf::Music music;
-    window.create(VideoMode(width, height), "UT PVZ", Style::Default);
+    window.create(VideoMode(width, height), "UT PVZ", Style::Close);
     window.setFramerateLimit(FRAME_RATE);
     state = IN_GAME;
 

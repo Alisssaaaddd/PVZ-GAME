@@ -121,7 +121,7 @@ void Controller::remove_touched_and_outside_suns()
 void Controller::add_zombie_random()
 {
     int x_position = WIDTH - 20;
-    int y_position = ((rng() % 5) * 150) + 90;
+    int y_position = ((rng() % 5) * 160) + 90;
     int randZom = rng() % 2;
     Zombie* z;
 
