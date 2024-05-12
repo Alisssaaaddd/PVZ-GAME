@@ -5,6 +5,7 @@
 #include "shot.hpp"
 #include "sun.hpp"
 #include "card.hpp"
+#include "white.hpp"
 
 class Controller{
     private:
@@ -16,6 +17,7 @@ class Controller{
         vector<Plant*> plants;
         vector<Sun*> suns;
         vector<Card*> cards;
+        WhiteBlock *wb;
     public:
         Controller();
         ~Controller();
