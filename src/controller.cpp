@@ -6,22 +6,43 @@ Controller::Controller()
                                    Vector2i(100, 100), 50, "sunflower.png");
     cards.push_back(sunFolwerCard);
     wb = new WhiteBlock(Vector2f(100, 200));
+    initialize_blocks();
+    should_draw_currentBlock = false;
 }
 
-Controller::~Controller(){
-    for(auto s : shots){
+Controller::~Controller()
+{
+    for (auto s : shots)
+    {
         delete s;
     }
-    for(auto z : zombies){
+    for (auto z : zombies)
+    {
         delete z;
     }
-    for(auto sun : suns){
+    for (auto sun : suns)
+    {
         delete sun;
     }
-    for(auto p : plants){
+    for (auto p : plants)
+    {
         delete p;
     }
     delete wb;
+}
+
+
+void Controller::initialize_blocks()
+{
+    for(int y=225; y<1011; y+=157){
+        for(int x=630; x<1824; x+=132){
+            RectangleShape block;
+            block.setPosition(Vector2f(x,y));
+            block.setSize(Vector2f(132, 150));
+            block.setFillColor(Color(255, 255, 255, 100));
+            blocks.push_back(block);
+        }
+    }
 }
 
 void Controller::handle_mouse_press(Vector2i mouse_pos)
@@ -66,6 +87,10 @@ void Controller::add_sun_inposition(Vector2i sunFlowerPos)
 
 void Controller::render(RenderWindow &window)
 {
+    if(should_draw_currentBlock){
+        window.draw(currentBlock);
+    }
+    
     if (wb->get_ready_to_show())
     {
         wb->render(window);
@@ -85,7 +110,7 @@ void Controller::render(RenderWindow &window)
     {
         z->render(window);
     }
-    
+
 }
 
 void Controller::update(RenderWindow &window)
@@ -109,16 +134,12 @@ void Controller::update(RenderWindow &window)
     {
         c->update(totalCredit, mouse_pos);
         if(c->is_dragging()){
-            if (mouse_pos.x >= 650 and mouse_pos.x <= 1700 and mouse_pos.y >= 300 and mouse_pos.y <= 980)
-            {   
-                int x_appear = mouse_pos.x / 125;
-                int y_appear = mouse_pos.y / 145;
-                wb->change_pos(Vector2f(x_appear * 125 + 10, y_appear * 145 - 30));
-                wb->show();
-            }
-            else{
-                wb->hide();
-
+            for(auto b : blocks){
+                if(b.getGlobalBounds().contains((Vector2f)mouse_pos)){
+                    should_draw_currentBlock = true;
+                    currentBlock = b;
+                    break;
+                }
             }
         }
     }

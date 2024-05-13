@@ -18,6 +18,10 @@ class Controller{
         vector<Sun*> suns;
         vector<Card*> cards;
         WhiteBlock *wb;
+        vector<RectangleShape> blocks;
+        RectangleShape currentBlock;
+        bool should_draw_currentBlock;
+
     public:
         Controller();
         ~Controller();
@@ -27,6 +31,7 @@ class Controller{
         void add_sun_inposition(Vector2i sunFlowerPos);
         void handle_mouse_press(Vector2i pos);
         void handle_mouse_release(Vector2i pos);
+        void initialize_blocks();
 
         void remove_touched_and_outside_suns();
         
