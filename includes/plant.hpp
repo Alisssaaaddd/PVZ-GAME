@@ -13,7 +13,7 @@ private:
     IntRect rect;
     Vector2i pos;
 public:
-    Plant(Vector2i pos);
-    ~Plant();
+    // Plant(Vector2i pos);
+    // ~Plant();
 };
 

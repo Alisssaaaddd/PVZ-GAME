@@ -8,6 +8,22 @@ Controller::Controller()
     wb = new WhiteBlock(Vector2f(100, 200));
 }
 
+Controller::~Controller(){
+    for(auto s : shots){
+        delete s;
+    }
+    for(auto z : zombies){
+        delete z;
+    }
+    for(auto sun : suns){
+        delete sun;
+    }
+    for(auto p : plants){
+        delete p;
+    }
+    delete wb;
+}
+
 void Controller::handle_mouse_press(Vector2i mouse_pos)
 {
     for (Sun *s : suns)
@@ -97,7 +113,7 @@ void Controller::update(RenderWindow &window)
             {   
                 int x_appear = mouse_pos.x / 125;
                 int y_appear = mouse_pos.y / 145;
-                wb->change_pos(Vector2f(x_appear * 125 - 25, y_appear * 145 - 50));
+                wb->change_pos(Vector2f(x_appear * 125 + 10, y_appear * 145 - 30));
                 wb->show();
             }
             else{
