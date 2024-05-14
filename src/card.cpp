@@ -1,11 +1,10 @@
 #include "../includes/card.hpp"
 
-Card::Card(string active_pic_name, string inactive_pic_name, Vector2i p, int cost
-          ,string plant_id){
-    pos = p;
-    dragging_situation = false;
-    price = cost;
+Card::Card(Vector2f init_pos, int init_price, string plant_id){
+    pos = init_pos;
+    price = init_price;
     plantId = plant_id;
+    dragging_situation = false;
 
     if(!plant_texture.loadFromFile(PICS_PATH + plantId + "/1.png")) {
         debug("failed to load plant texture");
@@ -13,7 +12,7 @@ Card::Card(string active_pic_name, string inactive_pic_name, Vector2i p, int cos
     plant_sprite.setTexture(plant_texture);
     set_scale_for_plant_sprite();
     plant_sprite.setColor(DRAGGING_LOW_TRANSPARENCY);
-    plant_sprite.setPosition((Vector2f)p);
+    plant_sprite.setPosition((Vector2f)init_pos);
 
 
     if(!active_texture.loadFromFile(PICS_PATH + "cards/" + plant_id + "active.png")) {
@@ -27,7 +26,7 @@ Card::Card(string active_pic_name, string inactive_pic_name, Vector2i p, int cos
     sprite.setTexture(inactive_texture);
     sprite.setScale(0.7, 0.7);
 
-    sprite.setPosition((Vector2f)p);
+    sprite.setPosition((Vector2f)init_pos);
 
     if(!font.loadFromFile(FONT_PATH)) {
         debug("failed to load inactive texture");

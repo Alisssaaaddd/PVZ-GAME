@@ -11,7 +11,7 @@ protected:
     Vector2f pos;
 
 public:
-    Sun(Vector2f init_pos);
+    Sun(Vector2f init_pos, int credit);
     ~Sun();
     void check_if_is_touched(Vector2i mouse_pos);
     virtual void update();
@@ -21,9 +21,9 @@ public:
 
 class DynamicSun : public Sun{
     private:
-        int speed;
+        int speed = 5;
     public:
-        DynamicSun(Vector2f pos);
+        DynamicSun(Vector2f init_pos, int credit);
         ~DynamicSun() {};
         void check_if_is_outside();
         void update();
@@ -38,11 +38,11 @@ enum PlaceSituation{
 class StaticSun : public Sun{
     private:
         PlaceSituation place;
-        int spawnTime;
+        int spawnTime = 5;
         int numOfMoves;
         Clock lifeClock;
     public:
-        StaticSun(Vector2f pos, int s_time);
+        StaticSun(Vector2f init_pos, int credit);
         ~StaticSun() {};
         void check_if_spawn_time_spent();
         void update();

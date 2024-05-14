@@ -8,9 +8,18 @@
 
 class Controller{
     private:
+        vector<zombieData> zombiesSettings;
+        vector<plantData> plantsSettings;
+        vector<int> attacksSettings;
+        vector<int> sunsSettings;
+
         mt19937 rng;
-        Clock clock, sunClock, zombieClock;
-        int totalCredit = 0;
+        Clock sunClock;
+        Clock gameClock, increaseRateClock, addZombieClock;
+        int totalCredit = 2000;
+        int addingZombiesRate;
+        float addingZombiesInterval;
+
         vector<Zombie*> zombies;
         void update_zombies();
         vector<Shot*> shots;
@@ -21,12 +30,18 @@ class Controller{
         void update_suns();
         vector<Card*> cards;
         void update_cards(RenderWindow& window);
+        void update_adding_zombies_rate();
 
         vector<RectangleShape> blocks;
         int currentBlockIndex;
         bool should_draw_currentBlock;
+
     public:
-        Controller();
+        Controller(const vector<zombieData>& z,
+                   const vector<plantData>& p,
+                   const vector<int>& a,
+                   const vector<int>& s);
+
         ~Controller();
         void render(RenderWindow& window);
         void update(RenderWindow& window);
@@ -40,10 +55,13 @@ class Controller{
         
         void add_zombie_random();
 
-        void seed(Vector2f pos, string plantId);
-        void add_shot(Vector2f init_pos, string plantId);
+        void seed(Vector2f pos, plantData plant);
+        void add_shot(Vector2f plant_pos, plantData plant, int numOfLine);
         void remove_outside_shots();
 
         void remove_dead_zombies(vector<Zombie*>& hurt_zombies);
         void handle_collisions();
+        int get_line_number(int height);
+
+        plantData get_plant_data_by_id(string plantId);
 };

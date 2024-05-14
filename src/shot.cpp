@@ -1,8 +1,11 @@
 #include "../includes/shot.hpp"
 
-Shot::Shot(Vector2f init_pos)
+Shot::Shot(Vector2f init_pos, int init_damage, int init_speed, int numOfLine)
 {
     pos = init_pos;
+    damage = init_damage;
+    speed = init_speed;
+    lineNumber = numOfLine;
 }
 
 Shot::~Shot()
@@ -35,7 +38,8 @@ int Shot::get_damage(){
     return damage;
 }
 
-OrdShot::OrdShot(Vector2f init_pos) : Shot(init_pos)
+OrdShot::OrdShot(Vector2f init_pos, int init_damage, int init_speed, int numOfLine) :
+                 Shot(init_pos, init_damage, init_speed, numOfLine)
 {
     if (!texture.loadFromFile(PICS_PATH + "shots/" + "pea.png"))
     {
@@ -57,7 +61,8 @@ void OrdShot::update()
     sprite.setPosition(pos);
 }
 
-IceShot::IceShot(Vector2f init_pos) : Shot(init_pos)
+IceShot::IceShot(Vector2f init_pos, int init_damage, int init_speed, int numOfLine) :
+                 Shot(init_pos, init_damage, init_speed, numOfLine)
 {
     if (!texture.loadFromFile(PICS_PATH + "shots/" + "icepea.png"))
     {
@@ -79,7 +84,8 @@ void IceShot::update()
     sprite.setPosition(pos);
 }
 
-MelonShot::MelonShot(Vector2f init_pos) : Shot(init_pos)
+MelonShot::MelonShot(Vector2f init_pos, int init_damage, int init_speed, int numOfLine) :
+                     Shot(init_pos, init_damage, init_speed, numOfLine)
 {
     if (!texture.loadFromFile(PICS_PATH + "shots/" + "melon.png"))
     {

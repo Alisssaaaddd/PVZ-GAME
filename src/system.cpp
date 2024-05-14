@@ -1,5 +1,23 @@
 #include "../includes/system.hpp"
 
+vector<string> System::split(string s, string delimiter){
+    int start = 0, end = 0;
+    vector <string> result;
+
+    while (end != -1) {
+        end = s.find(delimiter, start);
+        string segment = s.substr(start, end - start);
+
+        if(segment != EMPTY){
+            result.push_back(segment);
+        }
+
+        start = end + delimiter.size();
+    }
+
+    return result;
+}
+
 System::System(int width, int height)
 {
     sf::Music music;
@@ -19,8 +37,82 @@ System::System(int width, int height)
     }
     music.setLoop(true);
     music.play();
+    get_zombies_settings();
+    get_attacks_settings();
+    get_plants_settings();
+    get_suns_settings();
     
-    gamePlay = new Controller();
+    gamePlay = new Controller(zombiesSettings, plantsSettings, attacksSettings, sunsSettings);
+}
+
+void System::get_zombies_settings(){
+    ifstream settingsFile(ZOMBIES_SETTINGS_FILE_PATH);
+    string line;
+    vector<string> lineVec;
+    
+    while(getline(settingsFile, line)){
+        lineVec = split(line, COMMA);
+
+        for(string temp : lineVec){
+            vector<string> data = split(temp, FIELD_SEPARATOR);
+            zombieData z;
+            z.id = data[0];//Be carefull to not leave a space at the first of zombie id in the csv file!
+            z.damage = stoi(data[1]);
+            z.health = stoi(data[2]);
+            z.eatingRate = stoi(data[3]);
+            z.speed = stoi(data[4]);
+            
+            zombiesSettings.push_back(z);
+        }
+    }
+}
+
+void System::get_plants_settings(){
+    ifstream settingsFile(PLANTS_SETTINGS_FILE_PATH);
+    string line;
+    vector<string> lineVec;
+
+    while(getline(settingsFile, line)){
+        lineVec = split(line, COMMA);
+
+        for(string temp : lineVec){
+            vector<string> data = split(temp, FIELD_SEPARATOR);
+            plantData p;
+            p.id = data[0];//Be carefull to not leave a space at the first of zombie id in the csv file!
+            p.damage = stoi(data[1]);
+            p.health = stoi(data[2]);
+            p.coolDown = stoi(data[3]);
+            p.hitRate = stoi(data[4]);
+            p.speed = stoi(data[5]);
+            p.price = stoi(data[6]);
+            
+            plantsSettings.push_back(p);
+        }
+    }
+}
+
+void System::get_suns_settings(){
+    ifstream settingsFile(SUNS_SETTINGS_FILE_PATH);
+    string line;
+    getline(settingsFile, line);
+    vector<string> lineVec;
+    lineVec = split(line, FIELD_SEPARATOR);
+
+    for(string s : lineVec){
+        sunsSettings.push_back(stoi(s));
+    }
+}
+
+void System::get_attacks_settings(){
+    ifstream settingsFile(ATTACKS_SETTINGS_FILE_PATH);
+    string line;
+    getline(settingsFile, line);
+    vector<string> lineVec;
+    lineVec = split(line, FIELD_SEPARATOR);
+
+    for(string s : lineVec){
+        attacksSettings.push_back(stoi(s));
+    }
 }
 
 void System::start()

@@ -1,7 +1,9 @@
 #include "../includes/plant.hpp"
 
-Plant::Plant(Vector2f p){
-    pos = Vector2f(p.x, p.y);
+Plant::Plant(Vector2f init_pos, int init_health, int numOfLine){
+    pos = init_pos;
+    health = init_health;
+    lineNumber = numOfLine;
 }
 
 Plant::~Plant(){
@@ -10,6 +12,10 @@ Plant::~Plant(){
 
 Vector2f Plant::get_pos(){
     return pos;
+}
+
+int Plant::get_line_number(){
+    return lineNumber;
 }
 
 void Plant::update(){
@@ -24,9 +30,8 @@ string Plant::get_id(){
     return id;
 }
 
-SunFlower::SunFlower(Vector2f p, int rate) : Plant(p){
+SunFlower::SunFlower(Vector2f init_pos, int init_health, int numOfLine) : Plant(init_pos, init_health, numOfLine){
     id = SUN_FLOWER_ID;
-    produceRate = rate;
 
     if(!texture.loadFromFile(PICS_PATH + id + "/1.png")) {
         debug("failed to load sunflower texture");
@@ -57,9 +62,10 @@ void SunFlower::update(){
 
 }
 
-PeaShooter::PeaShooter(Vector2f p, int rate) : Plant(p){
+PeaShooter::PeaShooter(Vector2f init_pos, int init_health, int init_hitRate, int numOfLine) : 
+                       Plant(init_pos, init_health, numOfLine){
     id = PEA_SHOOTER_ID;
-    hitRate = rate;
+    hitRate = init_hitRate;
 
     if(!texture.loadFromFile(PICS_PATH + id + "/1.png")) {
         debug("failed to load peashooter texture");
@@ -90,10 +96,10 @@ void PeaShooter::update(){
 
 }
 
-IcePeaShooter::IcePeaShooter(Vector2f p, int rate) : Plant(p){
+IcePeaShooter::IcePeaShooter(Vector2f init_pos, int init_health, int init_hitRate, int numOfLine) : 
+                       Plant(init_pos, init_health, numOfLine){
     id = ICE_PEA_SHOOTER_ID;
-    hitRate = rate;
-
+    hitRate = init_hitRate;
     if(!texture.loadFromFile(PICS_PATH + id + "/1.png")) {
         debug("failed to load IcePeaShooter texture");
     }
@@ -123,7 +129,7 @@ void IcePeaShooter::update(){
 
 }
 
-Walnut::Walnut(Vector2f p) : Plant(p){
+Walnut::Walnut(Vector2f init_pos, int init_health, int numOfLine) : Plant(init_pos, init_health, numOfLine){
     id = WALNUT_ID;
 
     if(!texture.loadFromFile(PICS_PATH + id + "/1.png")) {
@@ -144,10 +150,10 @@ void Walnut::update(){
 
 }
 
-MelonPult::MelonPult(Vector2f p, int rate) : Plant(p){
+MelonPult::MelonPult(Vector2f init_pos, int init_health, int init_hitRate, int numOfLine) : 
+                     Plant(init_pos, init_health, numOfLine){
     id = MELONPULT_ID;
-    hitRate = rate;
-
+    hitRate = init_hitRate;
     if(!texture.loadFromFile(PICS_PATH + id + "/1.png")) {
         debug("failed to load MelonPult texture");
     }

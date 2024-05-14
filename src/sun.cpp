@@ -1,7 +1,8 @@
 #include "../includes/sun.hpp"
 
-Sun::Sun(Vector2f init_pos){
+Sun::Sun(Vector2f init_pos, int cost){
     pos = init_pos;
+    credit = cost;
     should_be_removed = false;
 
     if(!texture.loadFromFile(PICS_PATH + "sun.png")) {
@@ -36,7 +37,7 @@ bool Sun::get_shoud_be_removed(){
     return should_be_removed;
 }
 
-DynamicSun::DynamicSun(Vector2f pos) : Sun(pos) {
+DynamicSun::DynamicSun(Vector2f init_pos, int cost) : Sun(init_pos, cost) {
     speed = 1;
 }
 
@@ -53,8 +54,7 @@ void DynamicSun::update(){
     check_if_is_outside();
 }
 
-StaticSun::StaticSun(Vector2f pos, int s_time) : Sun(pos) {
-    spawnTime = s_time;
+StaticSun::StaticSun(Vector2f init_pos, int cost) : Sun(init_pos, cost) {
     place = GOING_UP;
     numOfMoves = 0;
 }

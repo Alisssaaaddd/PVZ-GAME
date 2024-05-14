@@ -1,18 +1,28 @@
 #include "../includes/controller.hpp"
 
-Controller::Controller(){
-    Card* sunFolwerCard = new Card("sunfloweractivecard.png", "sunflowerinactivecard.png",
-     Vector2i(100, 100), 50, SUN_FLOWER_ID);
+Controller::Controller(const vector<zombieData>& z,
+                       const vector<plantData>& p,
+                       const vector<int>& a,
+                       const vector<int>& s)
+{   
+    zombiesSettings = z;
+    plantsSettings = p;
+    attacksSettings = a;
+    sunsSettings = s;
+    
+    Card* sunFolwerCard = new Card(Vector2f(100, 100), 50, SUN_FLOWER_ID);
     cards.push_back(sunFolwerCard);
-
-    Plant* peashooter = new PeaShooter(Vector2f(595, 215), 1.5);
+    Plant* peashooter = new PeaShooter(Vector2f(595, 215), 10, 1, 1);
     plants.push_back(peashooter);
-    Plant* Icepeashooter = new IcePeaShooter(Vector2f(595, 365), 1.5);
+    Plant* Icepeashooter = new IcePeaShooter(Vector2f(595, 365), 10, 1.5, 2);
     plants.push_back(Icepeashooter);
-    Plant* walnut = new Walnut(Vector2f(595, 510));
+    Plant* walnut = new Walnut(Vector2f(595, 510), 200, 3);
     plants.push_back(walnut);
-    Plant* sunFlower = new SunFlower(Vector2f(595, 660), 5);
+    Plant* sunFlower = new SunFlower(Vector2f(595, 660), 100, 4);
     plants.push_back(sunFlower);
+
+    addingZombiesRate = attacksSettings[2];
+    addingZombiesInterval = (float)attacksSettings[1] / addingZombiesRate;
 
     initialize_blocks();
     should_draw_currentBlock = false;
@@ -60,14 +70,20 @@ void Controller::handle_mouse_press(Vector2i mouse_pos){
         }
     }
 
-
     for(Card* c : cards){
         c->handle_mouse_press(mouse_pos, totalCredit);
         if(c->is_dragging()){
             return;
         }
     }
-    //We'll add other objects later too ... .
+}
+
+plantData Controller::get_plant_data_by_id(string plantId){
+    for(plantData p : plantsSettings){
+        if(p.id == plantId){
+            return p;
+        }
+    }
 }
 
 void Controller::handle_mouse_release(Vector2i mouse_pos){
@@ -82,7 +98,7 @@ void Controller::handle_mouse_release(Vector2i mouse_pos){
                         Vector2f seed_pos = {blocks[currentBlockIndex].getGlobalBounds().left, blocks[currentBlockIndex].getGlobalBounds().top};//will change
                         string plantId = c->get_plant_id();
                         totalCredit -= c->get_price();
-                        seed(seed_pos, plantId);
+                        seed(seed_pos, get_plant_data_by_id(plantId));
 
                         blocks[currentBlockIndex].setFillColor(RED_BLOCKS_LOW_TRANSPARENCY);
                         break;
@@ -94,12 +110,12 @@ void Controller::handle_mouse_release(Vector2i mouse_pos){
 }
 
 void Controller::add_sun_random(){
-    DynamicSun* s = new DynamicSun(Vector2f(rng() % WIDTH, -100));
+    DynamicSun* s = new DynamicSun(Vector2f(rng() % WIDTH, -100), sunsSettings[2]);
     suns.push_back(s);
 }
 
 void Controller::add_sun_inposition(Vector2f sunFlowerPos){
-    StaticSun* s = new StaticSun(sunFlowerPos, 5);
+    StaticSun* s = new StaticSun(sunFlowerPos, sunsSettings[3]);
     suns.push_back(s);
 }
 
@@ -149,18 +165,21 @@ void Controller::remove_touched_and_outside_suns(){
 void Controller::add_zombie_random()
 {
     int x_position = WIDTH - 20;
-    int y_position = ((rng() % 5) * 150) + 90;
-    int randZom = rng() % 2;
+    int numOfLine = rng() % 5 + 1;
+
+    int y_position = ((numOfLine - 1) * 150) + 90;
+    int randZom = rng() % zombiesSettings.size();
+    zombieData tempz = zombiesSettings[randZom];
     Zombie* z;
 
-    switch (randZom)
-    {
-    case 0:
-        z = new OrdZombie(Vector2f(x_position, y_position+40));
-        break;
-    case 1:
-        z = new HugeZombie(Vector2f(x_position, y_position + 10));
-        break;
+    if(tempz.id == ORDINARY_ZOMBIE_ID){
+        z = new OrdZombie(Vector2f(x_position, y_position+40), tempz.damage, tempz.health,
+                          tempz.eatingRate, tempz.speed, numOfLine);
+    }
+
+    else if(tempz.id == HAIRMETALGARGANTUAR_ZOMBIE_ID){
+        z = new HugeZombie(Vector2f(x_position, y_position+10), tempz.damage, tempz.health,
+                           tempz.eatingRate, tempz.speed, numOfLine);
     }
 
     zombies.push_back(z);
@@ -204,6 +223,7 @@ void Controller::update_plants(){
     for(Plant* p : plants){
         p->update();
         string id = p->get_id();
+        plantData plant = get_plant_data_by_id(id);
 
         if(id == SUN_FLOWER_ID){
             SunFlower* s = (SunFlower*) p;
@@ -217,7 +237,7 @@ void Controller::update_plants(){
             PeaShooter* pea = (PeaShooter*) p;
 
             if(pea->should_shoot()){
-                add_shot(pea->get_pos(), id);
+                add_shot(pea->get_pos(), plant, pea -> get_line_number());
             }
         }
 
@@ -225,7 +245,7 @@ void Controller::update_plants(){
             IcePeaShooter* ice = (IcePeaShooter*) p;
 
             if(ice->should_shoot()){
-                add_shot(ice->get_pos(), id);
+                add_shot(ice->get_pos(), plant, ice->get_line_number());
             }
         }
 
@@ -233,7 +253,7 @@ void Controller::update_plants(){
             MelonPult* melon = (MelonPult*) p;
 
             if(melon->should_shoot()){
-                add_shot(melon->get_pos(), id);
+                add_shot(melon->get_pos(), plant, melon->get_line_number());
             }
         }
     }
@@ -250,7 +270,7 @@ void Controller::update_shots(){
 void Controller::update_suns(){
     Time elapsed = sunClock.getElapsedTime();
 
-    if(elapsed.asMilliseconds() >= 10000){
+    if(elapsed.asMilliseconds() >= sunsSettings[1] * 1000){
         sunClock.restart();
         add_sun_random();
     }
@@ -263,17 +283,27 @@ void Controller::update_suns(){
 }
 
 void Controller::update_zombies(){
-    Time zelapsed = zombieClock.getElapsedTime();
+    Time zelapsed = addZombieClock.getElapsedTime();
 
-    if (zelapsed.asMilliseconds() >= 5000)
+    if (zelapsed.asMilliseconds() >= addingZombiesInterval * 1000)
     {
-        zombieClock.restart();
         add_zombie_random();
+        addZombieClock.restart();
     }
 
     for (Zombie* z : zombies)
     {
         z->update();
+    }
+}
+
+void Controller::update_adding_zombies_rate(){
+    Time elapsed_from_last_increasement = increaseRateClock.getElapsedTime();
+
+    if(elapsed_from_last_increasement.asMilliseconds() >= attacksSettings[1] * 1000){
+        addingZombiesRate += attacksSettings[3];
+        addingZombiesInterval = (float)attacksSettings[1]/addingZombiesRate;
+        increaseRateClock.restart();
     }
 }
 
@@ -284,54 +314,84 @@ void Controller::update(RenderWindow& window){
     update_suns();
     update_zombies();
     handle_collisions();
+    update_adding_zombies_rate();
+
+    if(gameClock.getElapsedTime().asSeconds() >= attacksSettings[0]){
+        cout << "you won!";
+    }
 }
 
-void Controller::seed(Vector2f pos, string plantId){
-    if(plantId == SUN_FLOWER_ID){
-        SunFlower* s = new SunFlower(pos, 10);//rate will be changed.
+int Controller::get_line_number(int height){
+    if(height >= 150 and height <= 250){
+        return 1;
+    }
+
+    else if(height >= 340 and height <= 400){
+        return 2;
+    }
+
+    else if(height >= 470 and height <= 530){
+        return 3;
+    }
+
+    else if(height >= 620 and height <= 700){
+        return 4;
+    }
+
+    else if(height >= 770 and height <= 830){
+        return 5;
+    }
+}
+
+void Controller::seed(Vector2f pos, plantData plant){
+    // int numOfLine = get_line_number(pos.y);
+    int numOfLine = 2;
+
+    if(plant.id == SUN_FLOWER_ID){
+        SunFlower* s = new SunFlower(pos, plant.health, numOfLine);
         plants.push_back(s);
     }
 
-    else if(plantId == PEA_SHOOTER_ID){
-        PeaShooter* p = new PeaShooter(pos, 5);//rate will be changed.
+    else if(plant.id == PEA_SHOOTER_ID){
+        PeaShooter* p = new PeaShooter(pos, plant.health, plant.hitRate, numOfLine);
         plants.push_back(p);
     }
 
-    else if(plantId == ICE_PEA_SHOOTER_ID){
-        IcePeaShooter* i = new IcePeaShooter(pos, 5);//rate will be changed.
+    else if(plant.id == ICE_PEA_SHOOTER_ID){
+        IcePeaShooter* i = new IcePeaShooter(pos, plant.health, plant.hitRate, numOfLine);
         plants.push_back(i);
     }
 
-    else if(plantId == WALNUT_ID){
-        Walnut* w = new Walnut(pos);
+    else if(plant.id == WALNUT_ID){
+        Walnut* w = new Walnut(pos, plant.health, numOfLine);
         plants.push_back(w);
     }
 
-    else if(plantId == MELONPULT_ID){
-        MelonPult* m = new MelonPult(pos, 8);//rate will be changed.
+    else if(plant.id == MELONPULT_ID){
+        MelonPult* m = new MelonPult(pos, plant.health, plant.hitRate, numOfLine);
         plants.push_back(m);
     }
 
 }
 
-void Controller::add_shot(Vector2f plant_pos, string plantId){
+void Controller::add_shot(Vector2f plant_pos, plantData plant, int numOfLine){
     Vector2f shot_init_pos;
 
-    if(plantId == PEA_SHOOTER_ID){
+    if(plant.id == PEA_SHOOTER_ID){
         shot_init_pos = {plant_pos.x + 85, plant_pos.y + 20};
-        OrdShot* o = new OrdShot(shot_init_pos);
+        OrdShot* o = new OrdShot(shot_init_pos, plant.damage, plant.speed, numOfLine);
         shots.push_back(o);
     }
     
-    else if(plantId == ICE_PEA_SHOOTER_ID){
+    else if(plant.id == ICE_PEA_SHOOTER_ID){
         shot_init_pos = {plant_pos.x + 85, plant_pos.y + 25};
-        IceShot* i = new IceShot(shot_init_pos);
+        IceShot* i = new IceShot(shot_init_pos, plant.damage, plant.speed, numOfLine);
         shots.push_back(i);
     }
 
-    else if(plantId == MELONPULT_ID){
+    else if(plant.id == MELONPULT_ID){
         shot_init_pos = {plant_pos.x + 5, plant_pos.y + 10};
-        MelonShot* m = new MelonShot(shot_init_pos);
+        MelonShot* m = new MelonShot(shot_init_pos, plant.damage, plant.speed, numOfLine);
         shots.push_back(m);
     }
 }
