@@ -42,7 +42,7 @@ Card::Card(string active_pic_name, string inactive_pic_name, Vector2i p, int cos
 
 void Card::set_scale_for_plant_sprite(){
     if(plantId == PEA_SHOOTER_ID){
-        plant_sprite.setScale(0.26, 0.26);
+        plant_sprite.setScale(0.25, 0.25);
     }
 
     else if(plantId == ICE_PEA_SHOOTER_ID){

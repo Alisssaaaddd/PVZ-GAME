@@ -318,13 +318,13 @@ void Controller::add_shot(Vector2f plant_pos, string plantId){
     Vector2f shot_init_pos;
 
     if(plantId == PEA_SHOOTER_ID){
-        shot_init_pos = {plant_pos.x + 100, plant_pos.y + 42};
+        shot_init_pos = {plant_pos.x + 85, plant_pos.y + 20};
         OrdShot* o = new OrdShot(shot_init_pos);
         shots.push_back(o);
     }
     
     else if(plantId == ICE_PEA_SHOOTER_ID){
-        shot_init_pos = {plant_pos.x + 80, plant_pos.y + 40};
+        shot_init_pos = {plant_pos.x + 85, plant_pos.y + 25};
         IceShot* i = new IceShot(shot_init_pos);
         shots.push_back(i);
     }
@@ -357,13 +357,10 @@ void Controller::handle_collisions(){
         }
     }
 
-    cout << shots.size() << ": before" << endl;
-
     for(Shot* s : removed_shots){
         shots.erase(remove(shots.begin(), shots.end(), s), shots.end());   
         delete s;
     }
-    cout << shots.size() << ": after" << endl;
     
     remove_dead_zombies(hurt_zombies);
 }

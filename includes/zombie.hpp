@@ -22,7 +22,7 @@
 class Zombie
 {
 protected:
-    int health = 100;
+    int health = 10;
     int speed = 2;
     int lineNumber = 1;
     // int eatDamage;

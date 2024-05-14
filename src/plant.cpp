@@ -1,7 +1,7 @@
 #include "../includes/plant.hpp"
 
 Plant::Plant(Vector2f p){
-    pos = Vector2f(p.x, p.y - 20);
+    pos = Vector2f(p.x, p.y);
 }
 
 Plant::~Plant(){
@@ -10,10 +10,6 @@ Plant::~Plant(){
 
 Vector2f Plant::get_pos(){
     return pos;
-}
-
-int Plant::get_line_number(){
-    return lineNumber;
 }
 
 void Plant::update(){
@@ -39,7 +35,7 @@ SunFlower::SunFlower(Vector2f p, int rate) : Plant(p){
     sprite.setTexture(texture);
     sprite.setScale(0.22, 0.22);
     
-    sprite.setPosition(Vector2f(pos.x + 10, pos.y + 25));
+    sprite.setPosition(Vector2f(pos.x+10, pos.y+5));
 }
 
 SunFlower::~SunFlower(){
@@ -69,12 +65,10 @@ PeaShooter::PeaShooter(Vector2f p, int rate) : Plant(p){
         debug("failed to load peashooter texture");
     }
     texture.setSmooth(true);
-    texture.
     sprite.setTexture(texture);
+    sprite.setScale(0.25, 0.25);
     
-    sprite.setScale(0.26, 0.26);
-
-    sprite.setPosition(Vector2f(pos.x + 10, pos.y + 20));
+    sprite.setPosition(Vector2f(pos.x+5, pos.y));
 }
 
 PeaShooter::~PeaShooter(){
@@ -107,7 +101,7 @@ IcePeaShooter::IcePeaShooter(Vector2f p, int rate) : Plant(p){
     sprite.setTexture(texture);
     sprite.setScale(0.32, 0.32);
     
-    sprite.setPosition(Vector2f(pos.x - 15, pos.y));
+    sprite.setPosition(Vector2f(pos.x-20, pos.y-15));
 }
 
 IcePeaShooter::~IcePeaShooter(){
@@ -139,7 +133,7 @@ Walnut::Walnut(Vector2f p) : Plant(p){
     sprite.setTexture(texture);
     sprite.setScale(0.35, 0.35);
     
-    sprite.setPosition(Vector2f(pos.x - 30, pos.y));
+    sprite.setPosition(Vector2f(pos.x - 30, pos.y - 15));
 }
 
 Walnut::~Walnut(){
