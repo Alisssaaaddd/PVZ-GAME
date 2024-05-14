@@ -4,12 +4,14 @@
 
 class Plant{
 protected:
-    int health;
-    int cost;
+    // int health;
+    // int cost;
     string id;
     Texture texture;
     Sprite sprite;
     Vector2f pos;
+    int lineNumber = 1;
+
 public:
     Plant(Vector2f p);
     ~Plant();
@@ -17,6 +19,7 @@ public:
     string get_id();
     virtual void update();
     void render(RenderWindow& window);
+    int get_line_number();
 };
 
 class SunFlower : public Plant{
@@ -60,13 +63,13 @@ class Walnut : public Plant{
         void update();
 };
 
-class MelonPalt : public Plant{
+class MelonPult : public Plant{
     private:
         Clock shootClock;
         int hitRate;
     public:
-        MelonPalt(Vector2f p, int rate);
-        ~MelonPalt();
+        MelonPult(Vector2f p, int rate);
+        ~MelonPult();
         void update();
         bool should_shoot();
 };

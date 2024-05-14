@@ -12,6 +12,10 @@ Vector2f Plant::get_pos(){
     return pos;
 }
 
+int Plant::get_line_number(){
+    return lineNumber;
+}
+
 void Plant::update(){
 
 }
@@ -28,14 +32,14 @@ SunFlower::SunFlower(Vector2f p, int rate) : Plant(p){
     id = SUN_FLOWER_ID;
     produceRate = rate;
 
-    if(!texture.loadFromFile(PICS_PATH + "sunflower.png")) {
+    if(!texture.loadFromFile(PICS_PATH + id + "/1.png")) {
         debug("failed to load sunflower texture");
     }
     texture.setSmooth(true);
     sprite.setTexture(texture);
-    sprite.setScale(0.6, 0.6);
+    sprite.setScale(0.22, 0.22);
     
-    sprite.setPosition(pos);
+    sprite.setPosition(Vector2f(pos.x + 10, pos.y + 25));
 }
 
 SunFlower::~SunFlower(){
@@ -65,10 +69,12 @@ PeaShooter::PeaShooter(Vector2f p, int rate) : Plant(p){
         debug("failed to load peashooter texture");
     }
     texture.setSmooth(true);
+    texture.
     sprite.setTexture(texture);
-    sprite.setScale(0.3, 0.3);
     
-    sprite.setPosition(pos);
+    sprite.setScale(0.26, 0.26);
+
+    sprite.setPosition(Vector2f(pos.x + 10, pos.y + 20));
 }
 
 PeaShooter::~PeaShooter(){
@@ -99,9 +105,9 @@ IcePeaShooter::IcePeaShooter(Vector2f p, int rate) : Plant(p){
     }
     texture.setSmooth(true);
     sprite.setTexture(texture);
-    sprite.setScale(0.3, 0.3);
+    sprite.setScale(0.32, 0.32);
     
-    sprite.setPosition(pos);
+    sprite.setPosition(Vector2f(pos.x - 15, pos.y));
 }
 
 IcePeaShooter::~IcePeaShooter(){
@@ -131,9 +137,9 @@ Walnut::Walnut(Vector2f p) : Plant(p){
     }
     texture.setSmooth(true);
     sprite.setTexture(texture);
-    sprite.setScale(0.5, 0.5);
+    sprite.setScale(0.35, 0.35);
     
-    sprite.setPosition(pos);
+    sprite.setPosition(Vector2f(pos.x - 30, pos.y));
 }
 
 Walnut::~Walnut(){
@@ -144,12 +150,12 @@ void Walnut::update(){
 
 }
 
-MelonPalt::MelonPalt(Vector2f p, int rate) : Plant(p){
-    id = MELONPALT_ID;
+MelonPult::MelonPult(Vector2f p, int rate) : Plant(p){
+    id = MELONPULT_ID;
     hitRate = rate;
 
     if(!texture.loadFromFile(PICS_PATH + id + "/1.png")) {
-        debug("failed to load MelonPalt texture");
+        debug("failed to load MelonPult texture");
     }
     texture.setSmooth(true);
     sprite.setTexture(texture);
@@ -158,11 +164,11 @@ MelonPalt::MelonPalt(Vector2f p, int rate) : Plant(p){
     sprite.setPosition(pos);
 }
 
-MelonPalt::~MelonPalt(){
+MelonPult::~MelonPult(){
 
 }
 
-bool MelonPalt::should_shoot(){
+bool MelonPult::should_shoot(){
     Time elapsed = shootClock.getElapsedTime();
 
     if(elapsed.asSeconds() >= hitRate){
@@ -173,6 +179,6 @@ bool MelonPalt::should_shoot(){
     return false;
 }
 
-void MelonPalt::update(){
+void MelonPult::update(){
 
 }

@@ -1,36 +1,71 @@
 #include "../includes/card.hpp"
 
 Card::Card(string active_pic_name, string inactive_pic_name, Vector2i p, int cost
-          ,string plant_pic_name){
+          ,string plant_id){
     pos = p;
     dragging_situation = false;
     price = cost;
+    plantId = plant_id;
 
-    if(!plant_texture.loadFromFile(PICS_PATH + plant_pic_name)) {
+    if(!plant_texture.loadFromFile(PICS_PATH + plantId + "/1.png")) {
         debug("failed to load plant texture");
     }
     plant_sprite.setTexture(plant_texture);
-    
-    plant_sprite.setScale(0.5, 0.5);
-    plant_sprite.setColor(LOW_TRANSPARENCY);
+    set_scale_for_plant_sprite();
+    plant_sprite.setColor(DRAGGING_LOW_TRANSPARENCY);
     plant_sprite.setPosition((Vector2f)p);
 
 
-    if(!active_texture.loadFromFile(PICS_PATH + active_pic_name)) {
+    if(!active_texture.loadFromFile(PICS_PATH + "cards/" + plant_id + "active.png")) {
         debug("failed to load active texture");
     }
-    if(!inactive_texture.loadFromFile(PICS_PATH + inactive_pic_name)) {
+    if(!inactive_texture.loadFromFile(PICS_PATH + "cards/" + plant_id + "inactive.png")) {
         debug("failed to load inactive texture");
     }
-
+    active_texture.setSmooth(true);
+    inactive_texture.setSmooth(true);
     sprite.setTexture(inactive_texture);
-    sprite.setScale(1.5, 1.5);
+    sprite.setScale(0.7, 0.7);
 
     sprite.setPosition((Vector2f)p);
+
+    if(!font.loadFromFile(FONT_PATH)) {
+        debug("failed to load inactive texture");
+    }
+    priceText.setFont(font);
+    priceText.setString(to_string(price));
+    priceText.setCharacterSize(30);
+    priceText.setFillColor(Color::Black);
+    priceText.setStyle(Text::Bold);
+    priceText.setPosition(pos.x + 33, pos.y + 80);
+}
+
+void Card::set_scale_for_plant_sprite(){
+    if(plantId == PEA_SHOOTER_ID){
+        plant_sprite.setScale(0.26, 0.26);
+    }
+
+    else if(plantId == ICE_PEA_SHOOTER_ID){
+        plant_sprite.setScale(0.32, 0.32);
+    }
+
+    else if(plantId == WALNUT_ID){
+        plant_sprite.setScale(0.35, 0.35);
+    }
+
+    else if(plantId == SUN_FLOWER_ID){
+        plant_sprite.setScale(0.22, 0.22);
+    }
+
+    else if(plantId == MELONPULT_ID){
+        plant_sprite.setScale(0.3, 0.3);
+    }
 }
 
 void Card::render(RenderWindow& window){
     window.draw(sprite);
+    window.draw(priceText);
+    
 
     if(dragging_situation){
         window.draw(plant_sprite);
@@ -53,14 +88,14 @@ void Card::update(int totalCredit, Vector2i mouse_pos){
     }
 }
 
-void Card::handle_mouse_press(Vector2i mousePos){
+void Card::handle_mouse_press(Vector2i mousePos, int totalCredit){
     if(dragging_situation){
         if(plant_sprite.getGlobalBounds().contains((Vector2f)mousePos)){
             return;
         }
     }
 
-    if(sprite.getGlobalBounds().contains((Vector2f)mousePos)){
+    if(sprite.getGlobalBounds().contains((Vector2f)mousePos) and totalCredit >= price){
         dragging_situation = true;
     }
 }
@@ -83,4 +118,16 @@ void Card::fix_position(){
 
 bool Card::is_dragging(){
     return dragging_situation;
+}
+
+string Card::get_plant_id(){
+    return plantId;
+}
+
+bool Card::can_seed(){
+    return is_active;
+}
+
+int Card::get_price(){
+    return price;
 }

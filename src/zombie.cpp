@@ -35,7 +35,17 @@ FloatRect Zombie::get_rect(){
     return sprite.getGlobalBounds();
 }
 
+int Zombie::get_line_number(){
+    return lineNumber;
+}
 
+void Zombie::reduce_health(int damage){
+    health -= damage;
+}
+
+bool Zombie::is_dead(){
+    return health <= 0;
+}
 
 // // int Zombie::get_health()
 // // {
@@ -56,7 +66,6 @@ OrdZombie::OrdZombie(Vector2f init_pos) : Zombie(init_pos)
     sprite.setTexture(texture);
     sprite.setScale(0.4, 0.4);
     sprite.setPosition(init_pos);
-    is_dead = false;
 }
 
 void OrdZombie::update()
@@ -77,7 +86,6 @@ HugeZombie::HugeZombie(Vector2f init_pos) : Zombie(init_pos)
     sprite.setTexture(texture);
     sprite.setScale(0.4, 0.4);
     sprite.setPosition(init_pos);
-    is_dead = false;
 }
 
 void HugeZombie::update()

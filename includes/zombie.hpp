@@ -22,10 +22,10 @@
 class Zombie
 {
 protected:
-    int health;
-    int speed=2;
+    int health = 100;
+    int speed = 2;
+    int lineNumber = 1;
     // int eatDamage;
-    bool is_dead;
     Texture texture;
     Sprite sprite;
     IntRect rect;
@@ -38,9 +38,11 @@ public:
     Zombie(Vector2f init_pos);
     ~Zombie();
     virtual void update();
-    int get_health();
+    bool is_dead();
     void render(RenderWindow &window);
     FloatRect get_rect();
+    int get_line_number();
+    void reduce_health(int damage);
 };
 
 class OrdZombie : public Zombie
