@@ -11,6 +11,7 @@ protected:
     int hitRate;
     int eatDamage;
     Texture texture;
+    string id;
     Sprite sprite;
     IntRect rect;
     Vector2f pos;
@@ -19,7 +20,7 @@ protected:
     // int cur_rect = 0;
 
 public:
-    Zombie(Vector2f init_pos,int damage, int init_health, int init_hitRate, int init_speed, int numofLine);
+    Zombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, int init_speed, int numofLine);
     ~Zombie();
     virtual void update();
     bool is_dead();
@@ -33,7 +34,7 @@ class OrdZombie : public Zombie
 {
 private:
 public:
-    OrdZombie(Vector2f init_pos,int damage, int init_health, int init_hitRate, int init_speed, int numofLine);
+    OrdZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, int init_speed, int numofLine);
     ~OrdZombie(){};
     void update();
 };
@@ -42,7 +43,7 @@ class HugeZombie : public Zombie
 {
 private:
 public:
-    HugeZombie(Vector2f init_pos,int damage, int init_health, int init_hitRate, int init_speed, int numofLine);
+    HugeZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, int init_speed, int numofLine);
     ~HugeZombie(){};
     void update();
 };

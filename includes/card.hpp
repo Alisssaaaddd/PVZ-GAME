@@ -8,6 +8,7 @@ private:
     int coolDown;
     bool dragging_situation;
     bool is_active;
+    Clock coolDownClock;
     string plantId;
     Texture active_texture;
     Texture inactive_texture;
@@ -21,7 +22,7 @@ private:
 
     void set_scale_for_plant_sprite();
 public:
-    Card(Vector2f init_pos, int init_price, string plant_id);
+    Card(Vector2f init_pos, int init_price, string plant_id, int coolDownTime);
     ~Card();
     bool is_dragging();
     bool can_seed();
@@ -29,7 +30,7 @@ public:
     int get_price();
     void render(RenderWindow& window);
     void update(int totalCredit, Vector2i mouse_pos);
-    void handle_mouse_press(Vector2i mousePos, int totalCredit);
-    void handle_mouse_release(Vector2i mousePos);
+    void handle_mouse_press(Vector2i mousePos);
+    void handle_mouse_release(Vector2i mousePos, bool is_seeded);
     void fix_position();
 };

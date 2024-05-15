@@ -1,9 +1,10 @@
 #include "../includes/card.hpp"
 
-Card::Card(Vector2f init_pos, int init_price, string plant_id){
+Card::Card(Vector2f init_pos, int init_price, string plant_id, int coolDownTime){
     pos = init_pos;
     price = init_price;
     plantId = plant_id;
+    coolDown = coolDownTime;
     dragging_situation = false;
 
     if(!plant_texture.loadFromFile(PICS_PATH + plantId + "/1.png")) {
@@ -79,30 +80,39 @@ void Card::update(int totalCredit, Vector2i mouse_pos){
         fix_position();
     }
 
-    if(totalCredit >= price){
+    Time elapsed_from_last_seed = coolDownClock.getElapsedTime();
+
+    if(totalCredit >= price and elapsed_from_last_seed.asMilliseconds() >= coolDown * 1000){
         sprite.setTexture(active_texture);
+        is_active = true;
     }
+
     else{
         sprite.setTexture(inactive_texture);
+        is_active = false;
     }
 }
 
-void Card::handle_mouse_press(Vector2i mousePos, int totalCredit){
+void Card::handle_mouse_press(Vector2i mousePos){
     if(dragging_situation){
         if(plant_sprite.getGlobalBounds().contains((Vector2f)mousePos)){
             return;
         }
     }
 
-    if(sprite.getGlobalBounds().contains((Vector2f)mousePos) and totalCredit >= price){
+    if(sprite.getGlobalBounds().contains((Vector2f)mousePos) and is_active){
         dragging_situation = true;
     }
 }
 
-void Card::handle_mouse_release(Vector2i mousePos){
+void Card::handle_mouse_release(Vector2i mousePos, bool is_seeded){
     if(dragging_situation){
         dragging_situation = false;
         plant_sprite.setPosition((Vector2f)pos);
+
+        if(is_seeded){
+            coolDownClock.restart();
+        }
     }
 }
 

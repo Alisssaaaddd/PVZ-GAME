@@ -54,6 +54,7 @@ class Controller{
         void remove_touched_and_outside_suns();
         
         void add_zombie_random();
+        void add_cards();
 
         void seed(Vector2f pos, plantData plant);
         void add_shot(Vector2f plant_pos, plantData plant, int numOfLine);

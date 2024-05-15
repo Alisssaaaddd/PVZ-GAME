@@ -10,22 +10,37 @@ Controller::Controller(const vector<zombieData>& z,
     attacksSettings = a;
     sunsSettings = s;
     
-    Card* sunFolwerCard = new Card(Vector2f(100, 100), 50, SUN_FLOWER_ID);
-    cards.push_back(sunFolwerCard);
-    Plant* peashooter = new PeaShooter(Vector2f(595, 215), 10, 1, 1);
-    plants.push_back(peashooter);
-    Plant* Icepeashooter = new IcePeaShooter(Vector2f(595, 365), 10, 1.5, 2);
-    plants.push_back(Icepeashooter);
-    Plant* walnut = new Walnut(Vector2f(595, 510), 200, 3);
-    plants.push_back(walnut);
-    Plant* sunFlower = new SunFlower(Vector2f(595, 660), 100, 4);
-    plants.push_back(sunFlower);
+    // Card* sunFolwerCard = new Card(Vector2f(100, 100), 50, SUN_FLOWER_ID, 5);
+    // cards.push_back(sunFolwerCard);
+    // Plant* peashooter = new PeaShooter(Vector2f(595, 215), 10, 1, 1);
+    // plants.push_back(peashooter);
+    // Plant* Icepeashooter = new IcePeaShooter(Vector2f(595, 365), 10, 1.5, 2);
+    // plants.push_back(Icepeashooter);
+    // Plant* walnut = new Walnut(Vector2f(595, 510), 200, 3);
+    // plants.push_back(walnut);
+    // Plant* sunFlower = new SunFlower(Vector2f(595, 660), 100, 4);
+    // plants.push_back(sunFlower);
+
+    add_cards();
 
     addingZombiesRate = attacksSettings[2];
     addingZombiesInterval = (float)attacksSettings[1] / addingZombiesRate;
 
     initialize_blocks();
     should_draw_currentBlock = false;
+}
+
+void Controller::add_cards(){
+    float heightDif = 740 / plantsSettings.size() , cards_x = 380;
+    int counter = 0;
+
+    for(plantData p : plantsSettings){
+        Card* c = new Card(Vector2f(cards_x, 140 + counter * heightDif), p.price, p.id, p.coolDown);
+        cards.push_back(c);
+        counter ++;
+    }
+    
+    
 }
 
 Controller::~Controller()
@@ -71,7 +86,7 @@ void Controller::handle_mouse_press(Vector2i mouse_pos){
     }
 
     for(Card* c : cards){
-        c->handle_mouse_press(mouse_pos, totalCredit);
+        c->handle_mouse_press(mouse_pos);
         if(c->is_dragging()){
             return;
         }
@@ -87,24 +102,26 @@ plantData Controller::get_plant_data_by_id(string plantId){
 }
 
 void Controller::handle_mouse_release(Vector2i mouse_pos){
-    if(should_draw_currentBlock){
-        should_draw_currentBlock = false;
+    for(Card* c : cards){
+        if(c->is_dragging()){
+            bool is_seeded = false;
 
-        for(Card* c : cards){
-            if(c->is_dragging()){
-                c->handle_mouse_release(mouse_pos);
-                if(c->can_seed()){
-                    if(blocks[currentBlockIndex].getFillColor() != RED_BLOCKS_LOW_TRANSPARENCY){
-                        Vector2f seed_pos = {blocks[currentBlockIndex].getGlobalBounds().left, blocks[currentBlockIndex].getGlobalBounds().top};//will change
-                        string plantId = c->get_plant_id();
-                        totalCredit -= c->get_price();
-                        seed(seed_pos, get_plant_data_by_id(plantId));
+            if(should_draw_currentBlock and c->can_seed()){
+                should_draw_currentBlock = false;
+                is_seeded = true;
 
-                        blocks[currentBlockIndex].setFillColor(RED_BLOCKS_LOW_TRANSPARENCY);
-                        break;
-                    }
+                if(blocks[currentBlockIndex].getFillColor() != RED_BLOCKS_LOW_TRANSPARENCY){
+                    Vector2f seed_pos = {blocks[currentBlockIndex].getGlobalBounds().left, blocks[currentBlockIndex].getGlobalBounds().top};//will change
+                    string plantId = c->get_plant_id();
+                    totalCredit -= c->get_price();
+                    seed(seed_pos, get_plant_data_by_id(plantId));
+
+                    blocks[currentBlockIndex].setFillColor(RED_BLOCKS_LOW_TRANSPARENCY);
                 }
             }
+
+            c->handle_mouse_release(mouse_pos, is_seeded);
+            break;
         }
     }
 }
@@ -173,12 +190,12 @@ void Controller::add_zombie_random()
     Zombie* z;
 
     if(tempz.id == ORDINARY_ZOMBIE_ID){
-        z = new OrdZombie(Vector2f(x_position, y_position+40), tempz.damage, tempz.health,
+        z = new OrdZombie(Vector2f(x_position, y_position+40), ORDINARY_ZOMBIE_ID, tempz.damage, tempz.health,
                           tempz.eatingRate, tempz.speed, numOfLine);
     }
 
     else if(tempz.id == HAIRMETALGARGANTUAR_ZOMBIE_ID){
-        z = new HugeZombie(Vector2f(x_position, y_position+10), tempz.damage, tempz.health,
+        z = new HugeZombie(Vector2f(x_position, y_position+10), HAIRMETALGARGANTUAR_ZOMBIE_ID, tempz.damage, tempz.health,
                            tempz.eatingRate, tempz.speed, numOfLine);
     }
 
