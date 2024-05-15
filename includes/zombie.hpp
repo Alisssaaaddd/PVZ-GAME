@@ -5,9 +5,9 @@
 class Zombie
 {
 protected:
-    int health = 10;
-    int speed = 2;
-    int lineNumber = 1;
+    int health;
+    int speed;
+    int lineNumber;
     int hitRate;
     int eatDamage;
     Texture texture;

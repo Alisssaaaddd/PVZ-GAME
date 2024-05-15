@@ -64,6 +64,5 @@ const Color YELLOW = Color(255, 248, 220);
 const Color DRAGGING_LOW_TRANSPARENCY = Color(255, 255, 255, 150);
 const Color WHITE_BLOCKS_LOW_TRANSPARENCY = Color(255, 255, 255, 100);
 const Color RED_BLOCKS_LOW_TRANSPARENCY = Color(255, 0, 0, 100);
-// const co
 
 #define debug(x) cout << x << endl, exit(0);

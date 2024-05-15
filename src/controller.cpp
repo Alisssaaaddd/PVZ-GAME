@@ -108,9 +108,9 @@ void Controller::handle_mouse_release(Vector2i mouse_pos){
 
             if(should_draw_currentBlock and c->can_seed()){
                 should_draw_currentBlock = false;
-                is_seeded = true;
 
                 if(blocks[currentBlockIndex].getFillColor() != RED_BLOCKS_LOW_TRANSPARENCY){
+                    is_seeded = true;
                     Vector2f seed_pos = {blocks[currentBlockIndex].getGlobalBounds().left, blocks[currentBlockIndex].getGlobalBounds().top};//will change
                     string plantId = c->get_plant_id();
                     totalCredit -= c->get_price();
@@ -334,8 +334,13 @@ void Controller::update(RenderWindow& window){
     update_adding_zombies_rate();
 
     if(gameClock.getElapsedTime().asSeconds() >= attacksSettings[0]){
+        attacksSettings[3] = 0;
+        addingZombiesRate = 0;
+        addingZombiesInterval = 1000000;
         cout << "you won!";
     }
+
+    
 }
 
 int Controller::get_line_number(int height){
