@@ -9,17 +9,6 @@ Controller::Controller(const vector<zombieData>& z,
     plantsSettings = p;
     attacksSettings = a;
     sunsSettings = s;
-    
-    // Card* sunFolwerCard = new Card(Vector2f(100, 100), 50, SUN_FLOWER_ID, 5);
-    // cards.push_back(sunFolwerCard);
-    // Plant* peashooter = new PeaShooter(Vector2f(595, 215), 10, 1, 1);
-    // plants.push_back(peashooter);
-    // Plant* Icepeashooter = new IcePeaShooter(Vector2f(595, 365), 10, 1.5, 2);
-    // plants.push_back(Icepeashooter);
-    // Plant* walnut = new Walnut(Vector2f(595, 510), 200, 3);
-    // plants.push_back(walnut);
-    // Plant* sunFlower = new SunFlower(Vector2f(595, 660), 100, 4);
-    // plants.push_back(sunFlower);
 
     add_cards();
 
@@ -28,6 +17,8 @@ Controller::Controller(const vector<zombieData>& z,
 
     initialize_blocks();
     should_draw_currentBlock = false;
+
+    load_credit_border_and_text();
 }
 
 void Controller::add_cards(){
@@ -63,22 +54,39 @@ Controller::~Controller()
     }
 }
 
+void Controller::load_credit_border_and_text(){
+    font.loadFromFile(FONT_PATH);
+    
+    totalCreditBorderTexture.loadFromFile(PICS_PATH + "border.png");
+    totalCreditBorderTexture.setSmooth(true);
+    totalCreditBorder.setTexture(totalCreditBorderTexture);
+    totalCreditBorder.setScale(0.4, 0.4);
+    totalCreditBorder.setPosition(Vector2f(800, 0));
+
+    totalCreditText.setFont(font);
+    totalCreditText.setCharacterSize(45);
+    totalCreditText.setFillColor(Color::Black);
+    totalCreditText.setStyle(Text::Bold);
+    totalCreditText.setPosition(935, 10);
+}
+
 void Controller::initialize_blocks()
 {
-    for(int y=225; y<1011; y+=157){
-        for(int x=630; x<1824; x+=132){
+    for(int y=210; y<956; y+=149){
+        for(int x=595; x<1712; x+=124){
             RectangleShape block;
             block.setPosition(Vector2f(x,y));
-            block.setSize(Vector2f(132, 150));
+            block.setSize(Vector2f(124, 149));
             block.setFillColor(WHITE_BLOCKS_LOW_TRANSPARENCY);
             blocks.push_back(block);
         }
     }
 }
 
-void Controller::handle_mouse_press(Vector2i mouse_pos){
+void Controller::handle_mouse_press(Vector2i mousePos, State& state){
     for(Sun* s : suns){
-        s->check_if_is_touched(mouse_pos);
+        s->check_if_is_touched(mousePos);
+
         if(s->get_shoud_be_removed()){
             totalCredit += SUN_CREDIT;
             return;
@@ -86,7 +94,8 @@ void Controller::handle_mouse_press(Vector2i mouse_pos){
     }
 
     for(Card* c : cards){
-        c->handle_mouse_press(mouse_pos);
+        c->handle_mouse_press(mousePos);
+
         if(c->is_dragging()){
             return;
         }
@@ -101,7 +110,7 @@ plantData Controller::get_plant_data_by_id(string plantId){
     }
 }
 
-void Controller::handle_mouse_release(Vector2i mouse_pos){
+void Controller::handle_mouse_release(Vector2i mousePos){
     for(Card* c : cards){
         if(c->is_dragging()){
             bool is_seeded = false;
@@ -120,7 +129,7 @@ void Controller::handle_mouse_release(Vector2i mouse_pos){
                 }
             }
 
-            c->handle_mouse_release(mouse_pos, is_seeded);
+            c->handle_mouse_release(mousePos, is_seeded);
             break;
         }
     }
@@ -160,6 +169,9 @@ void Controller::render(RenderWindow& window){
     for(Sun* s : suns){
         s->render(window);
     }
+
+    window.draw(totalCreditBorder);
+    window.draw(totalCreditText);
 }
 
 void Controller::remove_touched_and_outside_suns(){
@@ -220,13 +232,13 @@ void Controller::remove_outside_shots(){
 }
 
 void Controller::update_cards(RenderWindow& window){
-    Vector2i mouse_pos = Mouse::getPosition(window);
+    Vector2i mousePos = Mouse::getPosition(window);
     for (Card *c : cards)
     {
-        c->update(totalCredit, mouse_pos);
+        c->update(totalCredit, mousePos);
         if(c->is_dragging()){
             for(int i = 0;i<NUM_OF_GAME_BLOCKS;i++){
-                if(blocks[i].getGlobalBounds().contains((Vector2f)mouse_pos)){
+                if(blocks[i].getGlobalBounds().contains((Vector2f)mousePos)){
                     should_draw_currentBlock = true;
                     currentBlockIndex = i;
                     break;
@@ -324,7 +336,28 @@ void Controller::update_adding_zombies_rate(){
     }
 }
 
-void Controller::update(RenderWindow& window){
+void Controller::check_if_is_won(State& state){
+    if(gameClock.getElapsedTime().asSeconds() >= attacksSettings[0]){
+        attacksSettings[3] = 0;
+        addingZombiesRate = 0;
+        addingZombiesInterval = 1000000;
+
+        if(zombies.size() == 0){
+            state = VICTORY_SCREEN;
+        }
+    }
+}
+
+void Controller::check_if_is_lost(State& state){
+    for(Zombie* z : zombies){
+        if(z->is_gone_in_the_house()){
+            state = GAMEOVER_SCREEN;
+            return;
+        }
+    }
+}
+
+void Controller::update(RenderWindow& window, State& state){
     update_cards(window);
     update_plants();
     update_shots();
@@ -332,15 +365,9 @@ void Controller::update(RenderWindow& window){
     update_zombies();
     handle_collisions();
     update_adding_zombies_rate();
-
-    if(gameClock.getElapsedTime().asSeconds() >= attacksSettings[0]){
-        attacksSettings[3] = 0;
-        addingZombiesRate = 0;
-        addingZombiesInterval = 1000000;
-        cout << "you won!";
-    }
-
-    
+    check_if_is_won(state);
+    check_if_is_lost(state);
+    totalCreditText.setString(to_string(totalCredit));
 }
 
 int Controller::get_line_number(int height){
@@ -366,8 +393,7 @@ int Controller::get_line_number(int height){
 }
 
 void Controller::seed(Vector2f pos, plantData plant){
-    // int numOfLine = get_line_number(pos.y);
-    int numOfLine = 2;
+    int numOfLine = get_line_number(pos.y);
 
     if(plant.id == SUN_FLOWER_ID){
         SunFlower* s = new SunFlower(pos, plant.health, numOfLine);
@@ -396,6 +422,15 @@ void Controller::seed(Vector2f pos, plantData plant){
 
 }
 
+Zombie* Controller::find_first_zombie_in_line(int numOfLine){
+    for(Zombie* z : zombies){
+        if(z->get_line_number() == numOfLine){
+            return z;
+        }
+    }
+    return NULL;
+}
+
 void Controller::add_shot(Vector2f plant_pos, plantData plant, int numOfLine){
     Vector2f shot_init_pos;
 
@@ -413,7 +448,12 @@ void Controller::add_shot(Vector2f plant_pos, plantData plant, int numOfLine){
 
     else if(plant.id == MELONPULT_ID){
         shot_init_pos = {plant_pos.x + 5, plant_pos.y + 10};
-        MelonShot* m = new MelonShot(shot_init_pos, plant.damage, plant.speed, numOfLine);
+        Zombie* closestZombie = find_first_zombie_in_line(numOfLine);
+        if(closestZombie == NULL){
+            return;
+        }
+        MelonShot* m = new MelonShot(shot_init_pos, plant.damage, plant.speed, numOfLine,
+                                     closestZombie->get_x() - shot_init_pos.x, closestZombie->get_speed());
         shots.push_back(m);
     }
 }

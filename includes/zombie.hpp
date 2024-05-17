@@ -28,6 +28,9 @@ public:
     FloatRect get_rect();
     int get_line_number();
     void reduce_health(int damage);
+    bool is_gone_in_the_house();
+    int get_x();
+    int get_speed();
 };
 
 class OrdZombie : public Zombie

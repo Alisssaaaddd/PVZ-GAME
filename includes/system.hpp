@@ -2,15 +2,6 @@
 
 #include "controller.hpp"
 
-enum State {
-  IN_GAME,
-  PAUSE_MENU,
-  MAIN_MENU,
-  VICTORY_SCREEN,
-  GAMEOVER_SCREEN,
-  EXIT
-};
-
 class System{
     private:
       State state;
@@ -22,6 +13,28 @@ class System{
       vector<plantData> plantsSettings;
       vector<int> attacksSettings;
       vector<int> sunsSettings;
+
+      Texture getBackToMainMenuButtonTexture;
+      Sprite getBackToMainMenuButtonSprite;
+      Texture resumeButtonTexture;
+      Sprite resumeButtonSprite;
+      Texture playButtonTexture;
+      Sprite playButtonSprite;
+      Texture quitButtonTexture;
+      Sprite quitButtonSprite;
+      Texture pauseButtonTexture;
+      Sprite pauseButton;
+
+      Texture pauseMenuTexture;
+      Sprite pauseMenuSprite;
+      Texture mainMenuTexture;
+      Sprite mainMenuSprite;
+
+      Text victoryText;
+      Text gameOverText;
+      Font font;
+
+      Music music;
       
     public:
       System(int width, int height);
@@ -39,4 +52,8 @@ class System{
       void get_plants_settings();
       void get_suns_settings();
       void get_attacks_settings();
+
+      void load_buttons();
+      void load_menus();
+      void load_gameResults();
 };

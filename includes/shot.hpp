@@ -44,8 +44,13 @@ public:
 class MelonShot : public Shot
 {
 private:
+    int verticalSpeed = 0;
+    int plant_x;
+    int plant_y;
+    int distance;
+    int zombieSpeed;
 public:
-    MelonShot(Vector2f init_pos, int init_damage, int init_speed, int numOfLine);
+    MelonShot(Vector2f init_pos, int init_damage, int init_speed, int numOfLine, int init_distance, int init_zombieSpeed);
     ~MelonShot();
     void update();
 };

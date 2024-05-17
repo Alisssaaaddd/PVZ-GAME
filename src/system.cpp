@@ -20,10 +20,9 @@ vector<string> System::split(string s, string delimiter){
 
 System::System(int width, int height)
 {
-    sf::Music music;
     window.create(VideoMode(width, height), "UT PVZ", Style::Close);
     window.setFramerateLimit(FRAME_RATE);
-    state = IN_GAME;
+    state = MAIN_MENU;
 
     if (!backgroundTexture.loadFromFile(PICS_PATH + "background.png"))
     {
@@ -36,14 +35,97 @@ System::System(int width, int height)
         debug("failed to load music");
     }
     music.setLoop(true);
-    music.play();
+
     get_zombies_settings();
     get_attacks_settings();
     get_plants_settings();
     get_suns_settings();
     
-    gamePlay = new Controller(zombiesSettings, plantsSettings, attacksSettings, sunsSettings);
+    load_buttons();
+    load_menus();
+    load_gameResults();
 }
+
+void System::load_buttons(){
+    if(!playButtonTexture.loadFromFile(PLAYBUTTON_PIC_PATH)){
+        debug("unable to load key pics");
+    }
+
+    playButtonSprite.setTexture(playButtonTexture);
+    playButtonSprite.setScale(0.40, 0.40);
+    playButtonSprite.setPosition(1070, 350);
+
+    if(!quitButtonTexture.loadFromFile(QUITBUTTON_PIC_PATH)){
+        debug("unable to load key pics");
+    }
+
+    quitButtonSprite.setTexture(quitButtonTexture);
+    quitButtonSprite.setScale(0.40, 0.40);
+    quitButtonSprite.setPosition(1070, 650);
+    
+    if(!resumeButtonTexture.loadFromFile(RESUMEBUTTTON_PIC_PATH)){
+        debug("unable to load key pics");
+    }
+
+    resumeButtonSprite.setTexture(resumeButtonTexture);
+    resumeButtonSprite.setScale(0.30, 0.30);
+    resumeButtonSprite.setPosition(740, 480);
+
+    if(!getBackToMainMenuButtonTexture.loadFromFile(MAINMENUBUTTON_PIC_PATH)){
+        debug("unable to load key pics");
+    }
+
+    getBackToMainMenuButtonSprite.setTexture(getBackToMainMenuButtonTexture);
+    getBackToMainMenuButtonSprite.setScale(0.30, 0.30);
+    getBackToMainMenuButtonSprite.setPosition(740, 680);
+
+    if(!pauseButtonTexture.loadFromFile(PAUSEBUTTON_PIC_PATH)){
+        debug("Failed to load pause button picture");
+    }
+    pauseButton.setTexture(pauseButtonTexture);
+    pauseButton.setScale(0.15, 0.15);
+    pauseButton.setPosition(1690, 15);
+}
+
+void System::load_menus(){
+    if(!mainMenuTexture.loadFromFile(MIANMENUSCREEN_PIC_PATH)){
+        debug("unable to load menu pics");
+    }
+
+    mainMenuSprite.setTexture(mainMenuTexture);
+    mainMenuSprite.setScale(0.45, 0.45);
+    mainMenuSprite.setPosition(0, 0);
+
+    if(!pauseMenuTexture.loadFromFile(PAUSESCREEN_PIC_PATH)){
+        debug("unable to load menu pics");
+    }
+
+    pauseMenuSprite.setTexture(pauseMenuTexture);
+    pauseMenuSprite.setScale(0.45, 0.45);
+    pauseMenuSprite.setPosition(0, 0);
+
+}
+
+void System::load_gameResults(){
+    if(!font.loadFromFile(FONT_PATH)) {
+        debug("failed to load inactive texture");
+    }
+
+    victoryText.setFont(font);
+    victoryText.setString("YOU WON!");
+    victoryText.setCharacterSize(300);
+    victoryText.setFillColor(RESULTS_TEXTS_COLOR);
+    victoryText.setStyle(Text::Bold);
+    victoryText.setPosition(450, 300);
+
+    gameOverText.setFont(font);
+    gameOverText.setString("THE ZOMBIES\n  ATE YOUR\n   BRAINS!");
+    gameOverText.setCharacterSize(250);
+    gameOverText.setFillColor(Color::Red);
+    gameOverText.setStyle(Text::Bold);
+    gameOverText.setPosition(450, 50);
+}
+
 
 void System::get_zombies_settings(){
     ifstream settingsFile(ZOMBIES_SETTINGS_FILE_PATH);
@@ -128,24 +210,33 @@ void System::start()
 
 void System::render()
 {
-    window.clear();
-
     switch (state){
         case (IN_GAME):
+            window.clear();
             window.draw(backgroundSprite);
             gamePlay->render(window);
+            window.draw(pauseButton);
             break;
         case (PAUSE_MENU):
+            window.draw(pauseMenuSprite);
+            window.draw(getBackToMainMenuButtonSprite);
+            window.draw(resumeButtonSprite);
             break;
         case (MAIN_MENU):
+            window.draw(mainMenuSprite);
+            window.draw(playButtonSprite);
+            window.draw(quitButtonSprite);
             break;
         case (VICTORY_SCREEN):
+            window.draw(backgroundSprite);
+            gamePlay->render(window);
+            window.draw(victoryText);
             break;
         case (GAMEOVER_SCREEN):
+            window.draw(backgroundSprite);
+            gamePlay->render(window);
+            window.draw(gameOverText);
             break;
-            // case (EXIT):
-            //     abort();
-            //     break;
     }
     window.display();
 }
@@ -179,7 +270,7 @@ void System::handle_mouse_press(Event ev)
     Vector2i mouse_pos = {ev.mouseButton.x, ev.mouseButton.y};
     switch (state){
         case (IN_GAME):
-            gamePlay->handle_mouse_press(mouse_pos);
+            gamePlay->handle_mouse_press(mouse_pos, state);
             break;
         case (PAUSE_MENU):
             break;
@@ -200,15 +291,40 @@ void System::handle_mouse_release(Event ev)
     switch (state)
     {
     case (IN_GAME):
+        if(pauseButton.getGlobalBounds().contains((Vector2f)mouse_pos)){
+            music.pause();
+            state = PAUSE_MENU;
+            break;
+        }
         gamePlay->handle_mouse_release(mouse_pos);
         break;
     case (PAUSE_MENU):
+        if(resumeButtonSprite.getGlobalBounds().contains(static_cast<Vector2f>(mouse_pos))){
+            music.play();
+            state = IN_GAME;
+        }
+
+        else if(getBackToMainMenuButtonSprite.getGlobalBounds().contains(static_cast<Vector2f>(mouse_pos))){
+
+            state = MAIN_MENU;
+        }
         break;
     case (MAIN_MENU):
+        if(playButtonSprite.getGlobalBounds().contains(static_cast<Vector2f>(mouse_pos))){
+            gamePlay = new Controller(zombiesSettings, plantsSettings, attacksSettings, sunsSettings);
+            state = IN_GAME;
+            music.play();
+        }
+
+        else if(quitButtonSprite.getGlobalBounds().contains(static_cast<Vector2f>(mouse_pos))){
+            state = EXIT;
+        }
         break;
     case (VICTORY_SCREEN):
+        state = EXIT;
         break;
     case (GAMEOVER_SCREEN):
+        state = EXIT;
         break;
     }
 }
@@ -216,15 +332,21 @@ void System::handle_mouse_release(Event ev)
 void System::update(){
     switch (state) {
         case (IN_GAME):
-            gamePlay->update(window);
+            gamePlay->update(window, state);
             break;
         case (PAUSE_MENU):
+        // pause the clocks
             break;
         case (MAIN_MENU):
             break;
         case (VICTORY_SCREEN):
             break;
         case (GAMEOVER_SCREEN):
+            break;
+        case (EXIT):
+            gamePlay->~Controller();
+            delete(gamePlay);
+            abort();
             break;
     }
 }

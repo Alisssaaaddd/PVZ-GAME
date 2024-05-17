@@ -31,12 +31,24 @@ int Zombie::get_line_number(){
     return lineNumber;
 }
 
+int Zombie::get_x(){
+    return pos.x;
+}
+
+int Zombie::get_speed(){
+    return speed;
+}
+
 void Zombie::reduce_health(int damage){
     health -= damage;
 }
 
 bool Zombie::is_dead(){
     return health <= 0;
+}
+
+bool Zombie::is_gone_in_the_house(){
+    return pos.x <= 540;
 }
 
 

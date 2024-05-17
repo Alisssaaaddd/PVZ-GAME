@@ -84,9 +84,14 @@ void IceShot::update()
     sprite.setPosition(pos);
 }
 
-MelonShot::MelonShot(Vector2f init_pos, int init_damage, int init_speed, int numOfLine) :
+MelonShot::MelonShot(Vector2f init_pos, int init_damage, int init_speed, int numOfLine, int init_distance, int init_zombieSpeed) :
                      Shot(init_pos, init_damage, init_speed, numOfLine)
 {
+    plant_x = init_pos.x;
+    plant_y = init_pos.y;
+    distance = init_distance;
+    zombieSpeed = init_zombieSpeed;
+
     if (!texture.loadFromFile(PICS_PATH + "shots/" + "melon.png"))
     {
         debug("failed to load melon shot texture");
@@ -102,6 +107,8 @@ MelonShot::~MelonShot()
 
 void MelonShot::update()
 {
+    verticalSpeed = GRAVITY * ((pos.x - plant_x) / speed) - INTEGRAL_CONSTANT * GRAVITY * (distance / (zombieSpeed + speed));
     pos.x += speed;
+    pos.y += verticalSpeed;
     sprite.setPosition(pos);
 }
