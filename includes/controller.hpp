@@ -42,8 +42,6 @@ private:
     Sprite totalCreditBorder;
     Texture totalCreditBorderTexture;
 
-    bool eatingFlag;
-
 public:
     Controller(const vector<zombieData> &z,
                const vector<plantData> &p,

@@ -18,7 +18,6 @@ Controller::Controller(const vector<zombieData> &z,
     initialize_blocks();
     should_draw_currentBlock = false;
 
-    eatingFlag = false;
     load_credit_border_and_text();
 }
 
@@ -212,13 +211,9 @@ void Controller::remove_touched_and_outside_suns()
         }
     }
 
-    suns.erase(remove_if(suns.begin(), suns.end(),
-                         [](Sun *p)
-                         { return p->get_shoud_be_removed(); }),
-               suns.end());
-
     for (Sun *s : removed)
     {
+        suns.erase(remove(suns.begin(), suns.end(), s), suns.end());
         delete (s);
     }
 }
@@ -260,13 +255,9 @@ void Controller::remove_outside_shots()
         }
     }
 
-    shots.erase(remove_if(shots.begin(), shots.end(),
-                          [](Shot *p)
-                          { return p->is_out(); }),
-                shots.end());
-
     for (Shot *s : removed_shots)
     {
+        shots.erase(remove(shots.begin(), shots.end(), s), shots.end());
         delete (s);
     }
 }
@@ -603,7 +594,7 @@ void Controller::handle_eating()
 
     for (Zombie *z : zombies)
     {
-        eatingFlag = false;
+        bool eatingFlag = false;
         zombie_rect = z->get_rect();
 
         for (Plant *p : plants)
@@ -638,7 +629,6 @@ void Controller::remove_dead_plants()
 
         if (temp_plant->is_dead())
         {
-            eatingFlag = false;
             whiten_red_block(temp_plant->get_pos());
             it = plants.erase(it);
             delete temp_plant;

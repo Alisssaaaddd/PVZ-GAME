@@ -27,7 +27,7 @@ typedef struct ZombieData{
     int damage;
     int health;
     int eatingRate;
-    int speed;
+    float speed;
 }zombieData;
 
 typedef struct PlantData{

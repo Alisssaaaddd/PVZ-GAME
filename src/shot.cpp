@@ -23,7 +23,7 @@ void Shot::update()
 
 bool Shot::is_out()
 {
-    return sprite.getPosition().x > WIDTH + 50;
+    return sprite.getPosition().x > WIDTH + 50 or sprite.getPosition().y > HEIGHT + 50;
 }
 
 FloatRect Shot::get_rect(){

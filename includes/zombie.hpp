@@ -6,11 +6,11 @@ class Zombie
 {
 protected:
     int health;
-    int speed;
+    float speed;
+    float mainSpeed;
     int lineNumber;
     int hitRate;
     int eatDamage;
-    float mainSpeed;
     bool isFrozen;
     bool isEating;
     Texture texture;
@@ -22,7 +22,7 @@ protected:
     Clock frozenClock, hitClock;
 
 public:
-    Zombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, int init_speed, int numofLine);
+    Zombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, float init_speed, int numofLine);
     ~Zombie();
     void update();
     bool is_dead();
@@ -48,7 +48,7 @@ class OrdZombie : public Zombie
 {
 private:
 public:
-    OrdZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, int init_speed, int numofLine);
+    OrdZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, float init_speed, int numofLine);
     ~OrdZombie(){};
 };
 
@@ -56,6 +56,6 @@ class HugeZombie : public Zombie
 {
 private:
 public:
-    HugeZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, int init_speed, int numofLine);
+    HugeZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, float init_speed, int numofLine);
     ~HugeZombie(){};
 };

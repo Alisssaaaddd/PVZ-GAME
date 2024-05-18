@@ -139,10 +139,10 @@ void System::get_zombies_settings(){
             vector<string> data = split(temp, FIELD_SEPARATOR);
             zombieData z;
             z.id = data[0];//Be carefull to not leave a space at the first of zombie id in the csv file!
-            z.damage = stoi(data[1]);
-            z.health = stoi(data[2]);
-            z.eatingRate = stoi(data[3]);
-            z.speed = stoi(data[4]);
+            z.damage = stof(data[1]);
+            z.health = stof(data[2]);
+            z.eatingRate = stof(data[3]);
+            z.speed = stof(data[4]);
             
             zombiesSettings.push_back(z);
         }
@@ -161,12 +161,12 @@ void System::get_plants_settings(){
             vector<string> data = split(temp, FIELD_SEPARATOR);
             plantData p;
             p.id = data[0];//Be carefull to not leave a space at the first of zombie id in the csv file!
-            p.damage = stoi(data[1]);
-            p.health = stoi(data[2]);
-            p.coolDown = stoi(data[3]);
-            p.hitRate = stoi(data[4]);
-            p.speed = stoi(data[5]);
-            p.price = stoi(data[6]);
+            p.damage = stof(data[1]);
+            p.health = stof(data[2]);
+            p.coolDown = stof(data[3]);
+            p.hitRate = stof(data[4]);
+            p.speed = stof(data[5]);
+            p.price = stof(data[6]);
             
             plantsSettings.push_back(p);
         }
@@ -181,7 +181,7 @@ void System::get_suns_settings(){
     lineVec = split(line, FIELD_SEPARATOR);
 
     for(string s : lineVec){
-        sunsSettings.push_back(stoi(s));
+        sunsSettings.push_back(stof(s));
     }
 }
 
@@ -193,7 +193,7 @@ void System::get_attacks_settings(){
     lineVec = split(line, FIELD_SEPARATOR);
 
     for(string s : lineVec){
-        attacksSettings.push_back(stoi(s));
+        attacksSettings.push_back(stof(s));
     }
 }
 

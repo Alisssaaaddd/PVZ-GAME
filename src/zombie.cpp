@@ -1,7 +1,7 @@
 #include "../includes/zombie.hpp"
 
 Zombie::Zombie(Vector2f init_pos, string init_id,
-               int damage, int init_health, int init_hitRate, int init_speed, int numofLine)
+               int damage, int init_health, int init_hitRate, float init_speed, int numofLine)
 {
     pos = init_pos;
     eatDamage = damage;
@@ -10,6 +10,9 @@ Zombie::Zombie(Vector2f init_pos, string init_id,
     speed = init_speed;
     lineNumber = numofLine;
     id = init_id;
+    isEating = false;
+    isFrozen = false;
+    mainSpeed = init_speed;
 }
 
 Zombie::~Zombie()
@@ -115,7 +118,7 @@ void Zombie::restart_zombie_clock()
     frozenClock.restart();
 }
 
-OrdZombie::OrdZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, int init_speed, int numofLine) : Zombie(init_pos, init_id, damage, init_health, init_hitRate, init_speed, numofLine)
+OrdZombie::OrdZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, float init_speed, int numofLine) : Zombie(init_pos, init_id, damage, init_health, init_hitRate, init_speed, numofLine)
 {
     pos = init_pos;
 
@@ -129,7 +132,7 @@ OrdZombie::OrdZombie(Vector2f init_pos, string init_id, int damage, int init_hea
     sprite.setPosition(init_pos);
 }
 
-HugeZombie::HugeZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, int init_speed, int numofLine) : Zombie(init_pos, init_id, damage, init_health, init_hitRate, init_speed, numofLine)
+HugeZombie::HugeZombie(Vector2f init_pos, string init_id, int damage, int init_health, int init_hitRate, float init_speed, int numofLine) : Zombie(init_pos, init_id, damage, init_health, init_hitRate, init_speed, numofLine)
 {
     pos = init_pos;
 
